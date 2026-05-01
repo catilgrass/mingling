@@ -114,7 +114,7 @@ use mingling::{
     macros::{
         chain, completion, dispatcher, gen_program, help, pack, r_println, renderer, suggest,
     },
-    parser::Picker,
+    parser::AsPicker,
     setup::BasicProgramSetup,
 };
 
@@ -161,10 +161,8 @@ fn comp_greet_command(ctx: &ShellContext) -> Suggest {
 // Define chain, parsing `GreetEntry` into `StateGreeting`
 #[chain]
 fn parse_name_to_greet(prev: GreetEntry) -> NextProcess {
-    let state_greeting: StateGreeting = Picker::new(prev.inner)
-        .pick_or::<String>((), "World")
-        .unpack_directly()
-        .into();
+    let state_greeting: StateGreeting = 
+        prev.pick_or::<String>((), "World").unpack().into();
     state_greeting
 }
 

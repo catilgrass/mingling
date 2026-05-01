@@ -36,7 +36,6 @@ struct YourCommandEntry {
 5. **\[core\]** Added function `dispatch_args_dynamic` to `Program`
 6. **\[core\]** Impl `std::io::Write` trait for `RenderResult`
 7. **\[core\]** Added Help system, which allows binding an event for `--help` to an `Entry` via the `help!` macro
-8. **\[core\]** Added the function `build_comp_script_to` to the `mingling::build` module: supports outputting completion scripts precisely to a specified directory
 
 ```rust
 #[help]
@@ -45,6 +44,7 @@ fn your_command_help(_prev: YourEntry) {
 }
 ```
 
+8. **\[core\]** Added the function `build_comp_script_to` to the `mingling::build` module: supports outputting completion scripts precisely to a specified directory
 9. **\[macros\]** Added the `route!` macro, which allows quick error routing within the `chain!` function. Usage is as follows:
 
 ```rust
