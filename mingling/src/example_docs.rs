@@ -1,5 +1,67 @@
 // Auto generated
 
+/// `Mingling` Example - Basic
+///
+///  # How to Run
+///  ```bash
+///  cargo run --manifest-path ./examples/example-basic/Cargo.toml -- hello World
+///  ```
+///
+/// Cargo.toml
+/// ```ignore
+/// [package]
+/// name = "example-basic"
+/// version = "0.0.1"
+/// edition = "2024"
+///
+/// [dependencies]
+/// mingling = { path = "../../mingling" }
+/// ```
+///
+/// main.rs
+/// ```ignore
+/// use mingling::macros::{chain, dispatcher, gen_program, pack, r_println, renderer};
+///
+/// // Define dispatcher `HelloCommand`, directing subcommand "hello" to `HelloEntry`
+/// dispatcher!("hello", HelloCommand => HelloEntry);
+///
+/// fn main() {
+///     // Create program
+///     let mut program = ThisProgram::new();
+///
+///     // Add dispatcher `HelloCommand`
+///     program.with_dispatcher(HelloCommand);
+///
+///     // Run program
+///     program.exec();
+/// }
+///
+/// // Register wrapper type `Hello`, setting inner to `String`
+/// pack!(Hello = String);
+///
+/// // Register chain to `ThisProgram`, handling logic from `HelloEntry`
+/// #[chain]
+/// fn parse_name(prev: HelloEntry) -> NextProcess {
+///     // Extract string from `HelloEntry` as argument
+///     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
+///
+///     // Build `Hello` type and route to renderer
+///     Hello::new(name).to_render()
+/// }
+///
+/// // Register renderer to `ThisProgram`, handling rendering of `Hello`
+/// #[renderer]
+/// fn render_hello_who(prev: Hello) {
+///     // Print message
+///     r_println!("Hello, {}!", *prev);
+///
+///     // Program ends here
+/// }
+///
+/// // Generate program, default is `ThisProgram`
+/// gen_program!();
+/// ```
+pub mod example_basic {}
 /// `Mingling` Example - Async
 ///
 ///  After enabling the `async` feature:
@@ -52,7 +114,7 @@
 ///
 /// #[chain]
 /// // fn parse_name(prev: HelloEntry) -> NextProcess {
-/// async fn parse_name(prev: HelloEntry) -> mingling::ChainProcess<ThisProgram> {
+/// async fn parse_name(prev: HelloEntry) -> NextProcess {
 ///     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
 ///     Hello::new(name).to_render()
 /// }
@@ -66,71 +128,6 @@
 /// gen_program!();
 /// ```
 pub mod example_async {}
-/// `Mingling` Example - Basic
-///
-///  # How to Run
-///  ```bash
-///  cargo run --manifest-path ./examples/example-basic/Cargo.toml -- hello World
-///  ```
-///
-/// Cargo.toml
-/// ```ignore
-/// [package]
-/// name = "example-basic"
-/// version = "0.0.1"
-/// edition = "2024"
-///
-/// [dependencies]
-/// mingling = { path = "../../mingling" }
-/// ```
-///
-/// main.rs
-/// ```ignore
-/// use mingling::{
-///     ChainProcess,
-///     macros::{chain, dispatcher, gen_program, pack, r_println, renderer},
-/// };
-///
-/// // Define dispatcher `HelloCommand`, directing subcommand "hello" to `HelloEntry`
-/// dispatcher!("hello", HelloCommand => HelloEntry);
-///
-/// fn main() {
-///     // Create program
-///     let mut program = ThisProgram::new();
-///
-///     // Add dispatcher `HelloCommand`
-///     program.with_dispatcher(HelloCommand);
-///
-///     // Run program
-///     program.exec();
-/// }
-///
-/// // Register wrapper type `Hello`, setting inner to `String`
-/// pack!(Hello = String);
-///
-/// // Register chain to `ThisProgram`, handling logic from `HelloEntry`
-/// #[chain]
-/// fn parse_name(prev: HelloEntry) -> ChainProcess<ThisProgram> {
-///     // Extract string from `HelloEntry` as argument
-///     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
-///
-///     // Build `Hello` type and route to renderer
-///     Hello::new(name).to_render()
-/// }
-///
-/// // Register renderer to `ThisProgram`, handling rendering of `Hello`
-/// #[renderer]
-/// fn render_hello_who(prev: Hello) {
-///     // Print message
-///     r_println!("Hello, {}!", *prev);
-///
-///     // Program ends here
-/// }
-///
-/// // Generate program, default is `ThisProgram`
-/// gen_program!();
-/// ```
-pub mod example_basic {}
 /// `Mingling` Example - Completion
 ///
 ///  # How to Deploy
@@ -171,7 +168,7 @@ pub mod example_basic {}
 /// main.rs
 /// ```ignore
 /// use mingling::{
-///     ChainProcess, EnumTag, Groupped, ShellContext, Suggest,
+///     EnumTag, Groupped, ShellContext, Suggest,
 ///     macros::{
 ///         chain, completion, dispatcher, gen_program, r_println, renderer, suggest, suggest_enum,
 ///     },
@@ -242,9 +239,9 @@ pub mod example_basic {}
 /// impl PickableEnum for FruitType {}
 ///
 /// #[chain]
-/// fn parse_fruit_info(prev: FruitEntry) -> ChainProcess<ThisProgram> {
-///     let picker = Picker::<()>::from(prev.inner);
-///     let (fruit_name, fruit_type) = picker.pick("--name").pick("--type").unpack_directly();
+/// fn parse_fruit_info(prev: FruitEntry) -> NextProcess {
+///     let picker = Picker::from(prev.inner);
+///     let (fruit_name, fruit_type) = picker.pick("--name").pick("--type").unpack();
 ///     let info = FruitInfo {
 ///         name: fruit_name,
 ///         fruit_type,
@@ -325,7 +322,7 @@ pub mod example_completion {}
 /// main.rs
 /// ```ignore
 /// use mingling::{
-///     ChainProcess, Groupped,
+///     Groupped,
 ///     macros::{chain, dispatcher, gen_program, r_println, renderer},
 ///     parser::Picker,
 ///     setup::GeneralRendererSetup,
@@ -352,11 +349,11 @@ pub mod example_completion {}
 /// }
 ///
 /// #[chain]
-/// fn parse_render(prev: RenderCommandEntry) -> ChainProcess<ThisProgram> {
-///     let (name, age) = Picker::<()>::new(prev.inner)
+/// fn parse_render(prev: RenderCommandEntry) -> NextProcess {
+///     let (name, age) = Picker::new(prev.inner)
 ///         .pick::<String>(())
 ///         .pick::<i32>(())
-///         .unpack_directly();
+///         .unpack();
 ///     Info { name, age }.to_render()
 /// }
 ///
@@ -419,7 +416,7 @@ pub mod example_general_renderer {}
 /// pack!(ParsedPickInput = (i32, String));
 ///
 /// #[chain]
-/// fn parse(prev: PickEntry) -> mingling::ChainProcess<ThisProgram> {
+/// fn parse(prev: PickEntry) -> NextProcess {
 ///     // Extract arguments from `PickEntry`'s inner and create a `Picker`
 ///     let picker = Picker::new(prev.inner);
 ///     let picked = picker

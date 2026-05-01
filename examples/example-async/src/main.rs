@@ -36,7 +36,7 @@ pack!(Hello = String);
 
 #[chain]
 // fn parse_name(prev: HelloEntry) -> NextProcess {
-async fn parse_name(prev: HelloEntry) -> mingling::ChainProcess<ThisProgram> {
+async fn parse_name(prev: HelloEntry) -> NextProcess {
     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
     Hello::new(name).to_render()
 }

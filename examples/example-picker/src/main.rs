@@ -34,7 +34,7 @@ pack!(NoNameProvided = ());
 pack!(ParsedPickInput = (i32, String));
 
 #[chain]
-fn parse(prev: PickEntry) -> mingling::ChainProcess<ThisProgram> {
+fn parse(prev: PickEntry) -> NextProcess {
     // Extract arguments from `PickEntry`'s inner and create a `Picker`
     let picker = Picker::new(prev.inner);
     let picked = picker

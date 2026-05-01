@@ -60,7 +60,7 @@ struct Info {
 }
 
 #[chain]
-fn parse_render(prev: RenderCommandEntry) -> ChainProcess<ThisProgram> {
+fn parse_render(prev: RenderCommandEntry) -> NextProcess {
     let (name, age) = Picker::new(prev.inner)
         .pick::<String>(())
         .pick::<i32>(())

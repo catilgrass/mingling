@@ -96,7 +96,7 @@ enum FruitType {
 impl PickableEnum for FruitType {}
 
 #[chain]
-fn parse_fruit_info(prev: FruitEntry) -> ChainProcess<ThisProgram> {
+fn parse_fruit_info(prev: FruitEntry) -> NextProcess {
     let picker = Picker::from(prev.inner);
     let (fruit_name, fruit_type) = picker.pick("--name").pick("--type").unpack();
     let info = FruitInfo {
