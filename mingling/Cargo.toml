@@ -13,7 +13,7 @@ repository = "https://github.com/catilgrass/mingling"
 [dev-dependencies]
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
-mingling = { path = ".", features = ["full"] }
+mingling = { path = ".", features = ["comp", "general_renderer", "parser"] }
 
 [features]
 nightly = ["mingling_core/nightly", "mingling_macros/nightly"]
