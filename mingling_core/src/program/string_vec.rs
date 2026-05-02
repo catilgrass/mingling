@@ -1,4 +1,5 @@
 #[derive(Debug, Clone)]
+#[doc(hidden)]
 pub struct StringVec {
     vec: Vec<String>,
 }

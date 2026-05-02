@@ -33,6 +33,11 @@ pub trait CompletionEntry {
     fn get_input(self) -> Vec<String>;
 }
 
+/// A helper struct for handling command-line completion logic.
+///
+/// This struct provides static methods for executing completions based on
+/// the current shell context and rendering the resulting suggestions in a
+/// format appropriate for the target shell.
 pub struct CompletionHelper;
 impl CompletionHelper {
     pub fn exec_completion<P>(ctx: &ShellContext) -> Suggest

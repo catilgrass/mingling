@@ -4,6 +4,13 @@ use crate::{
 use serde::Serialize;
 
 pub mod error;
+
+/// A general renderer that supports multiple serialization formats.
+///
+/// The `GeneralRenderer` provides methods to serialize data into various formats
+/// including JSON, YAML, TOML, and RON, with support for both regular and
+/// pretty-printed variants. It is designed to work with types that implement
+/// the `Serialize` trait.
 pub struct GeneralRenderer;
 
 impl GeneralRenderer {

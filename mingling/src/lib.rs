@@ -1,7 +1,7 @@
 //! Mingling
 //!
 //! # Intro
-//! `Mingling` is a Rust command-line framework. Its name comes from the Chinese Pinyin for "命令", which means "Command".
+//! A Rust CLI framework for many subcmds & complex workflows, reduces boilerplate via proc macros, focus on biz logic
 //!
 //! # Use
 //!
@@ -51,9 +51,11 @@
 //! ```
 //!
 //! # Features
+//! - `async` enables async runtime support for command execution, see [example](_mingling_examples/example_async/index.html) for details
 //! - `comp` enables command completion functionality, see [example](_mingling_examples/example_completion/index.html) for details
 //! - `parser` enables the `mingling::parser` module, see [example](_mingling_examples/example_picker/index.html) for details
 //! - `general_renderer` adds support for serialized output formats such as JSON and YAML, see [example](_mingling_examples/example_general_renderer/index.html) for details
+//!
 //!
 //! # Examples
 //! `Mingling` provides detailed usage examples for your reference.

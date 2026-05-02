@@ -1,13 +1,22 @@
 use just_fmt::snake_case;
 
+/// Represents the shell environment for which the output format is intended.
+///
+/// This enum defines the supported shell types that can be used for
+/// generating shell-specific command syntax, scripts, or completions.
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "general_renderer", derive(serde::Serialize))]
 pub enum ShellFlag {
+    /// Represents the Bash shell.
     #[default]
     Bash,
+    /// Represents the Zsh shell.
     Zsh,
+    /// Represents the Fish shell.
     Fish,
+    /// Represents PowerShell.
     Powershell,
+    /// A custom or unsupported shell type, identified by the provided string.
     Other(String),
 }
 

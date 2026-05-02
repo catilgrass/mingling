@@ -5,7 +5,7 @@ edition = "2024"
 authors = ["Weicao-CatilGrass"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-description = "Rust CLI framework for many subcmds & complex workflows, reduces boilerplate via proc macros, focus on biz logic"
+description = "A Rust CLI framework for many subcmds & complex workflows, reduces boilerplate via proc macros, focus on biz logic"
 keywords = ["cli", "framework", "procedural", "subcommand", "command-line"]
 categories = ["command-line-interface"]
 repository = "https://github.com/catilgrass/mingling"
@@ -15,12 +15,15 @@ serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
 mingling = { path = ".", features = ["comp", "general_renderer", "parser"] }
 
+[package.metadata.docs.rs]
+features = ["general_renderer", "repl", "comp", "parser"]
+
 [features]
 nightly = ["mingling_core/nightly", "mingling_macros/nightly"]
 debug = ["mingling_core/debug"]
 async = ["mingling_core/async", "mingling_macros/async"]
 
-default = ["mingling_core/default"]
+default = ["mingling_core/default", "mingling_macros/default"]
 
 clap = ["mingling_core/clap", "mingling_macros/clap"]
 general_renderer = [

@@ -6,7 +6,7 @@
 <h1 align="center">Mìng Lìng - 命令</h1>
 
 <p align="center">
-    Rust CLI framework for many subcmds & complex workflows, reduces boilerplate via proc macros, focus on biz logic
+    A Rust CLI framework for many subcmds & complex workflows, reduces boilerplate via proc macros, focus on biz logic
 </p>
 <p align="center">
 	<img src="https://img.shields.io/github/stars/CatilGrass/mingling?style=for-the-badge"> 

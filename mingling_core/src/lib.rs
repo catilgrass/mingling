@@ -15,6 +15,7 @@ mod renderer;
 
 mod tester;
 
+/// Provides a toolkit for `Mingling` testing capabilities.
 pub mod test {
     pub use crate::tester::*;
 }

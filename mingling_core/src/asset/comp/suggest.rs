@@ -66,10 +66,20 @@ impl std::ops::DerefMut for Suggest {
     }
 }
 
+/// Represents a single suggestion item for shell completion.
+///
+/// This enum has two variants:
+/// - `Simple(String)`: A suggestion without any description.
+/// - `WithDescription(String, String)`: A suggestion with an associated description.
+///
+/// The first `String` always holds the suggestion text, and the second `String` (if present)
+/// holds an optional description providing additional context.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "general_renderer", derive(serde::Serialize))]
 pub enum SuggestItem {
+    /// A simple suggestion with only the suggestion text.
     Simple(String),
+    /// A suggestion with both text and a description.
     WithDescription(String, String),
 }
 

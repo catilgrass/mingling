@@ -46,14 +46,24 @@ pub struct ProgramUserContext {
 
 #[cfg(feature = "general_renderer")]
 #[derive(Debug, Clone, Default)]
+/// Settings for the general renderer output format.
+///
+/// Controls how structured data (e.g., JSON, YAML, TOML) is rendered to stdout.
 pub enum GeneralRendererSetting {
+    /// Do not render structured output (use default formatting).
     #[default]
     Disable,
+    /// Render output as compact JSON.
     Json,
+    /// Render output as pretty-printed JSON.
     JsonPretty,
+    /// Render output as YAML.
     Yaml,
+    /// Render output as TOML.
     Toml,
+    /// Render output as RON.
     Ron,
+    /// Render output as pretty-printed RON.
     RonPretty,
 }
 
