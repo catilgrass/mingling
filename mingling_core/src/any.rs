@@ -117,9 +117,19 @@ pub enum ChainProcess<G> {
 ///
 /// - `Chain`: Continue execution to the next chain
 /// - `Renderer`: Send output to renderer and end execution
+#[derive(Debug, PartialEq, Eq)]
 pub enum Next {
     Chain,
     Renderer,
+}
+
+impl std::fmt::Display for Next {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Next::Chain => write!(f, "Chain"),
+            Next::Renderer => write!(f, "Renderer"),
+        }
+    }
 }
 
 impl<G> From<AnyOutput<G>> for ChainProcess<G> {

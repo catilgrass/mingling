@@ -13,6 +13,12 @@ mod asset;
 mod program;
 mod renderer;
 
+mod tester;
+
+pub mod test {
+    pub use crate::tester::*;
+}
+
 #[cfg(feature = "general_renderer")]
 pub use crate::renderer::general::GeneralRenderer;
 

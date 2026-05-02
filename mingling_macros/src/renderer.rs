@@ -131,11 +131,14 @@ pub fn renderer_attr(item: TokenStream) -> TokenStream {
 
         // Keep the original function for internal use (without r parameter)
         #(#fn_attrs)*
-        #vis fn #fn_name(#prev_param: #previous_type) {
+        #vis fn #fn_name(#prev_param: impl Into<#previous_type>) -> ::mingling::RenderResult {
+            let #prev_param = #prev_param.into();
             let mut dummy_r = ::mingling::RenderResult::default();
-            let r = &mut dummy_r;
-            #fn_body
-            println!("{}", r.trim());
+            {
+                let r = &mut dummy_r;
+                #fn_body
+            }
+            dummy_r
         }
     };
 
