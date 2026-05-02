@@ -17,6 +17,7 @@ async = []
 clap = []
 comp = []
 general_renderer = []
+repl = []
 
 [dependencies]
 syn = { version = "2.0", features = ["full", "visit-mut"] }

@@ -28,7 +28,7 @@ general_renderer = [
     "dep:serde",
     "mingling_macros/general_renderer",
 ]
-
+repl = ["mingling_core/repl", "mingling_macros/repl"]
 comp = ["mingling_core/comp", "mingling_macros/comp"]
 parser = ["dep:size"]
 

@@ -21,6 +21,7 @@ general_renderer = [
     "dep:serde_yaml",
     "dep:toml",
 ]
+repl = []
 
 [dependencies]
 just_fmt = "0.1.2"
