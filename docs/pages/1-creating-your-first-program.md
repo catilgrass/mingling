@@ -26,11 +26,11 @@
 ```toml
 [dependencies]
 mingling = "0.1.7"
-
+ 
 # If you want the latest, try the version hosted on Github
 mingling = { git = "https://github.com/catilgrass/mingling", branch = "main" }
 ```
-
+ 
 > [!NOTE]
 >
 > This version matches the **Mingling** version used when writing this doc. Check [crates.io](https://crates.io/crates/mingling) for the latest release! 😄 
@@ -48,12 +48,12 @@ fn main() {
     // Create ThisProgram and run it
     ThisProgram::new().exec();
 }
-
+ 
 // The gen_program! macro collects *all preceding* components & types
 // then generates the `ThisProgram` struct
 mingling::macros::gen_program!();
 ```
-
+ 
 > [!TIP]
 >
 > When `gen_program!()` expands, it gathers info from other components & types that were expanded before it. This means you must place `gen_program!()` at the very last expansion point in the crate.
@@ -70,15 +70,15 @@ mingling::macros::gen_program!();
 fn main() {
     // ...
 }
-
+ 
 // Create a dispatcher, binding GreetCommand to the "greet" sub-command
 // When the user specifies this command, send GreetEntry to the dispatcher
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 // ...
 gen_program!();
 ```
-
+ 
   Don't be scared by the sudden macro and two new types! Let me explain what this macro does:
 
 ##### About the `dispatcher!` macro 💡
@@ -106,13 +106,13 @@ gen_program!();
 ```rust
 fn main() {
     let mut program = ThisProgram::new();
-
+ 
     // Register the dispatcher
     program.with_dispatcher(GreetCommand);
     program.exec();
 }
 ```
-
+ 
   Now `ThisProgram` recognizes the `"greet"` sub-command, but the framework still doesn't know what `"greet"` should do. That's where we implement the actual logic:
 
 
@@ -124,24 +124,24 @@ fn main() {
 ```rust
 // ...
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 // Declare a renderer `render_greet`, specifying the previous type as `GreetEntry`
 #[renderer]
 fn render_greet(_prev: GreetEntry) {
     r_println!("Hello, World!");
 }
-
+ 
 // ...
 gen_program!(); // The renderer will be registered with the program
 ```
-
+ 
   For functions marked with `#[renderer]`, **Mingling** strictly enforces only one function signature:
 
 ```rust
 #[renderer]
 fn renderer_name (_prev: PreviousType) {  }
 ```
-
+ 
   The macro reads the type of the first param and tells `gen_program!` that this function renders that type.
 
 ##### About `r_println!()` 💡
@@ -158,10 +158,10 @@ fn renderer_name (_prev: PreviousType) {  }
 
 ```rust
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 // Wrap the intermediate type `ResultGreetSomeone`
 pack!(ResultGreetSomeone = String);
-
+ 
 #[chain]
 fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
     let args = prev.inner;
@@ -169,18 +169,18 @@ fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
      .first()
      .cloned()
      .unwrap_or_else(|| "World".to_string());
-
+ 
     // Wrap into intermediate type
     ResultGreetSomeone::new(name)
 }
-
+ 
 #[renderer]
 fn render_greet_someone(prev: ResultGreetSomeone) {
     // Deref prev to get the raw type
     r_println!("Hello, {}!", *prev); 
 }
 ```
-
+ 
   Just like `#[renderer]`, we created a `#[chain]` that processes type `GreetEntry` and outputs `ResultGreetSomeone`.
 
   This inserts a `Chain` between the original `Dispatcher` and `Renderer`: it extracts the user's input params (or falls back to "World"), then passes them to the renderer to print to the terminal.
@@ -204,7 +204,7 @@ fn render_greet_someone(prev: ResultGreetSomeone) {
 ```rust
 pack!(PackedType = RawType);
 ```
-
+ 
   Note: `pack!` doesn't support types with lifetimes, because types are always moved (not borrowed) between dispatchers.
 
 
@@ -215,33 +215,33 @@ pack!(PackedType = RawType);
 
 ```rust
 use mingling::macros::{chain, dispatcher, gen_program, pack, r_println, renderer};
-
+ 
 fn main() {
     let mut program = ThisProgram::new();
     program.with_dispatcher(GreetCommand);
     program.exec();
 }
-
+ 
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 pack!(ResultGreetSomeone = String);
-
+ 
 #[chain]
 fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
     let args = prev.inner;
     let name = args.first().cloned().unwrap_or_else(|| "World".to_string());
-
+ 
     ResultGreetSomeone::new(name)
 }
-
+ 
 #[renderer]
 fn render_greet_someone(prev: ResultGreetSomeone) {
     r_println!("Hello, {}!", *prev);
 }
-
+ 
 gen_program!();
 ```
-
+ 
   Output:
 
 ```bash
@@ -250,7 +250,7 @@ Hello, World!
 ~> your-bin greet Alice
 Hello, Alice!
 ```
-
+ 
 <p align="center" style="font-size: 0.85em; color: gray;">
     Written by @Weicao-CatilGrass
 </p>

@@ -13,7 +13,7 @@
 ~> your-bin hello
 ~> your-bin hello Alice
 ```
-
+ 
   **它没有任何反应！** 👆
   
   让我来解释为什么：**Mingling** 不自作主张，无论发生什么它都不会输出内容到终端（除了 `unwind` 下的 `panic!`）
@@ -34,20 +34,20 @@
 ```rust
 // 1. 定义 `greet` 命令
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 fn main() {
     // ->> 用户输入 "hello Alice"
     let mut program = ThisProgram::new();
-
+ 
     // 2. 导入 `greet` 命令
     program.with_dispatcher(GreetCommand);
-
+ 
     // 3. 执行程序
     program.exec();
 }
-
+ 
 // ... 
-
+ 
 // 5. 接收 DispatcherNotFound 调度
 #[renderer]
 fn dispatcher_not_found(prev: DispatcherNotFound) {
@@ -57,7 +57,7 @@ fn dispatcher_not_found(prev: DispatcherNotFound) {
         prev.join(" ")
     );
 }
-
+ 
 // 4. 无法匹配到任何名为 `hello` 的分发器
 //    将用户参数原样分发到 DispatcherNotFound
 gen_program!(); 
@@ -68,11 +68,11 @@ gen_program!();
 ```bash
 ~> omg hello
 Cannot match any command! Current input: "hello"
-
+ 
 ~> omg hello Alice
 Cannot match any command! Current input: "hello Alice"
 ```
-
+ 
   现在若用户输入了不匹配的命令，**Mingling** 将会输出对应的内容！
   
 ## `RendererNotFound` 类型
@@ -86,30 +86,30 @@ Cannot match any command! Current input: "hello Alice"
   
 ```rust
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 fn main() {
     let mut program = ThisProgram::new();
-
+ 
     program.with_dispatcher(GreetCommand);
     program.exec();
 }
-
+ 
 pack!(ResultGreetSomeone = String);
-
+ 
 #[chain]
 fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
     let args = prev.inner;
     let name = args.first().cloned().unwrap_or_else(|| "World".to_string());
-
+ 
     ResultGreetSomeone::new(name)
 }
-
+ 
 // 让我们故意去除 `ResultGreetSomeone` 类型的渲染器实现
 // #[renderer]
 // fn render_greet_someone(prev: ResultGreetSomeone) {
 //     r_println!("Hello, {}!", *prev);
 // }
-
+ 
 #[renderer]
 fn renderer_not_found(prev: RendererNotFound) {
     if *prev == "DispatcherNotFound" {
@@ -119,16 +119,16 @@ fn renderer_not_found(prev: RendererNotFound) {
     // 当未找到渲染器时触发 `panic!`
     panic!("Renderer \"{}\" not found!", *prev);
 }
-
+ 
 gen_program!();
-
+ 
 ```
-
+ 
   上述程序的运行效果为：
   
 ```bash
 ~> your-bin greet Alice
-
+ 
 thread 'main' (90772) panicked at src/bin/your-bin.rs:30:5:
 Renderer "ResultGreetSomeone" not found!
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

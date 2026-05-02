@@ -13,7 +13,7 @@
 ~> your-bin hello
 ~> your-bin hello Alice
 ```
-
+ 
    **It does nothing!** 👆
 
    Let me explain why: **Mingling** doesn't presume to act; it will not output anything to the terminal no matter what happens (except for `panic!` under `unwind`)
@@ -34,20 +34,20 @@
 ```rust
 // 1. Define the `greet` command
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 fn main() {
     // ->> User enters "hello Alice"
     let mut program = ThisProgram::new();
-
+ 
     // 2. Import the `greet` command
     program.with_dispatcher(GreetCommand);
-
+ 
     // 3. Execute the program
     program.exec();
 }
-
+ 
 // ... 
-
+ 
 // 5. Receive the DispatcherNotFound dispatch
 #[renderer]
 fn dispatcher_not_found(prev: DispatcherNotFound) {
@@ -57,22 +57,22 @@ fn dispatcher_not_found(prev: DispatcherNotFound) {
         prev.join(" ")
     );
 }
-
+ 
 // 4. Cannot match any dispatcher named `hello`
 //    Forward the user's arguments as-is to DispatcherNotFound
 gen_program!(); 
 ```
-
+ 
    The output of the above program is:
 
 ```bash
 ~> omg hello
 Cannot match any command! Current input: "hello"
-
+ 
 ~> omg hello Alice
 Cannot match any command! Current input: "hello Alice"
 ```
-
+ 
    Now, if the user enters a command that doesn't match, **Mingling** will output the appropriate message!
 
 ## The `RendererNotFound` Type
@@ -86,54 +86,54 @@ Cannot match any command! Current input: "hello Alice"
 
 ```rust
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 fn main() {
     let mut program = ThisProgram::new();
-
+ 
     program.with_dispatcher(GreetCommand);
     program.exec();
 }
-
+ 
 pack!(ResultGreetSomeone = String);
-
+ 
 #[chain]
 fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
     let args = prev.inner;
     let name = args.first().cloned().unwrap_or_else(|| "World".to_string());
-
+ 
     ResultGreetSomeone::new(name)
 }
-
+ 
 // Let's intentionally remove the renderer implementation for `ResultGreetSomeone`
 // #[renderer]
 // fn render_greet_someone(prev: ResultGreetSomeone) {
 //     r_println!("Hello, {}!", *prev);
 // }
-
+ 
 #[renderer]
 fn renderer_not_found(prev: RendererNotFound) {
     if *prev == "DispatcherNotFound" {
         return; // Exclude the "DispatcherNotFound" type
     }
-
+ 
     // Trigger `panic!` when a renderer is not found
     panic!("Renderer \"{}\" not found!", *prev);
 }
-
+ 
 gen_program!();
-
+ 
 ```
-
+ 
    The output of the above program is:
 
 ```bash
 ~> your-bin greet Alice
-
+ 
 thread 'main' (90772) panicked at src/bin/your-bin.rs:30:5:
 Renderer "ResultGreetSomeone" not found!
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
-
+ 
 <p align="center" style="font-size: 0.85em; color: gray;">
     Written by @Weicao-CatilGrass
 </p>

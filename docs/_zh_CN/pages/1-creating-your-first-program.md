@@ -26,11 +26,11 @@
 ```toml
 [dependencies]
 mingling = "0.1.7"
-
+ 
 # 如果您要尝鲜，可以试试 Github 上托管的版本
 mingling = { git = "https://github.com/catilgrass/mingling", branch = "main" }
 ```
-
+ 
 > [!NOTE]
 >
 > 该版本基于文档编写时的 **Mingling** 版本，您可以前往 [crates.io](https://crates.io/crates/mingling) 查看最新的版本！😄 
@@ -48,12 +48,12 @@ fn main() {
     // 创建 ThisProgram，并执行
     ThisProgram::new().exec();
 }
-
+ 
 // gen_program! 宏将会收集 *它之前* 的所有组件、类型
 // 然后生成程序 `ThisProgram`
 mingling::macros::gen_program!();
 ```
-
+ 
 > [!TIP]
 >
 >   `gen_Sprogram!()` 宏展开时，会收集在它之前展开的其他组件、类型的信息，这意味着您需要将 `gen_program!()` 放在整个 crate 中最后被展开的位置
@@ -70,15 +70,15 @@ mingling::macros::gen_program!();
 fn main() {
     // ...
 }
-
+ 
 // 创建分发器，并将 GreetCommand 绑定在 "greet" 子命令
 // 在用户指定该命令时，向调度器发送 GreetEntry
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 // ...
 gen_program!();
 ```
-
+ 
   不要被突然多出来的一个宏和两个类型所吓到！我来逐一解释这个宏干了什么：
 
 ##### 关于 `dispatcher!` 宏 💡
@@ -112,7 +112,7 @@ fn main() {
     program.exec();
 }
 ```
-
+ 
   这样，`ThisProgram` 就认得 `"greet"` 子命令了，但是框架还不知道 `"greet"` 的行为是怎样的。此时我们便需要实现具体的逻辑：
 
 
@@ -124,24 +124,24 @@ fn main() {
 ```rust
 // ...
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 // 声明渲染器 `render_greet`，并表示前一个类型是 `GreetEntry`
 #[renderer]
 fn render_greet(_prev: GreetEntry) {
     r_println!("Hello, World!");
 }
-
+ 
 // ...
 gen_program!(); // 渲染器会被注册到程序
 ```
-
+ 
   对于 `#[renderer]` 属性宏标记的函数，**Mingling** 严格规定只允许使用一种函数签名：
 
 ```rust
 #[renderer]
 fn renderer_name (_prev: PreviousType) {  }
 ```
-
+ 
   宏会读取到第一个参数的类型，并告诉 `gen_program!` 该函数用来渲染该类型。
 
 ##### 关于 `r_println!()` 💡
@@ -158,10 +158,10 @@ fn renderer_name (_prev: PreviousType) {  }
 
 ```rust
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 // 包装中间类型 `ResultGreetSomeone`
 pack!(ResultGreetSomeone = String);
-
+ 
 #[chain]
 fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
     let args = prev.inner;
@@ -169,18 +169,18 @@ fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
     	.first()
     	.cloned()
     	.unwrap_or_else(|| "World".to_string());
-
+ 
     // 包装为中间类型
     ResultGreetSomeone::new(name)
 }
-
+ 
 #[renderer]
 fn render_greet_someone(prev: ResultGreetSomeone) {
     // 解引用 prev 拿到原始类型
     r_println!("Hello, {}!", *prev); 
 }
 ```
-
+ 
   像 `#[renderer]` 一样，我们创建了一个 `#[chain]`，它处理类型 `GreetEntr`，输出 `ResultGreetSomeone`
 
   这样我们就在原本的 `Dispatcher` 和 `Renderer` 中间插入了一个 `Chain`：它可以将用户输入的参数提取出来（或回退到默认值 "World"），再交由渲染器打印到终端。
@@ -204,7 +204,7 @@ fn render_greet_someone(prev: ResultGreetSomeone) {
 ```rust
 pack!(PackedType = RawType);
 ```
-
+ 
   不过请注意：`pack!` 宏不支持带有生命周期的类型包装，因为类型在调度器之间的流转方式永远都是 `move` 而非 `borrow`。
 
 
@@ -215,33 +215,33 @@ pack!(PackedType = RawType);
 
 ```rust
 use mingling::macros::{chain, dispatcher, gen_program, pack, r_println, renderer};
-
+ 
 fn main() {
     let mut program = ThisProgram::new();
     program.with_dispatcher(GreetCommand);
     program.exec();
 }
-
+ 
 dispatcher!("greet", GreetCommand => GreetEntry);
-
+ 
 pack!(ResultGreetSomeone = String);
-
+ 
 #[chain]
 fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
     let args = prev.inner;
     let name = args.first().cloned().unwrap_or_else(|| "World".to_string());
-
+ 
     ResultGreetSomeone::new(name)
 }
-
+ 
 #[renderer]
 fn render_greet_someone(prev: ResultGreetSomeone) {
     r_println!("Hello, {}!", *prev);
 }
-
+ 
 gen_program!();
 ```
-
+ 
   运行结果：
 
 ```bash
@@ -250,7 +250,7 @@ Hello, World!
 ~> your-bin greet Alice
 Hello, Alice!
 ```
-
+ 
 <p align="center" style="font-size: 0.85em; color: gray;">
     Written by @Weicao-CatilGrass
 </p>
