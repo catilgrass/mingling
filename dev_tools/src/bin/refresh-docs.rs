@@ -6,19 +6,12 @@ use just_template::{Template, tmpl};
 const EXAMPLE_ROOT: &str = "./examples/";
 const OUTPUT_PATH: &str = "./mingling/src/example_docs.rs";
 
-const DOCS_README_FILE: &str = "./docs/README.md";
-
-const README_CONTENT: &str = include_str!("../../../README.md");
 const TEMPLATE_CONTENT: &str = include_str!("../../../mingling/src/example_docs.rs.tmpl");
 
 fn main() {
     {
         println!("Refreshing Examples");
         gen_example_doc_module();
-    }
-    {
-        println!("Refreshing README.md");
-        gen_docs_readme();
     }
 }
 
@@ -61,14 +54,6 @@ fn gen_example_doc_module() {
         .join("\n")
         + "\n";
     std::fs::write(repo_root.join(OUTPUT_PATH), template_str).unwrap();
-}
-
-fn gen_docs_readme() {
-    let repo_root = find_git_repo().unwrap();
-
-    // Convert relative addresses in the documentation
-    let content = README_CONTENT.replace("docs/res/", "res/");
-    std::fs::write(repo_root.join(DOCS_README_FILE), content).unwrap();
 }
 
 struct ExampleContent {
