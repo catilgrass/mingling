@@ -125,6 +125,8 @@ checksum = "f8ca58f447f06ed17d5fc4043ce1b10dd205e060fb3ce5b979b8ed8e59ff3f79"
 [[package]]
 name = "mingling"
 version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7755900d667c43912a31b1b164061264811c4a93300061a6285920497805749b"
 dependencies = [
  "mingling_core",
  "mingling_macros",

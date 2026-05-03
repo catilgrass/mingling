@@ -2,6 +2,9 @@
 name = "mingling-cli"
 version = "0.1.7"
 edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/catilgrass/mingling"
+description = "Mingling's scaffolding tool"
 
 [[bin]]
 name = "mling"
@@ -20,7 +23,7 @@ strip = true
 
 
 [dependencies]
-mingling = { path = "../mingling", features = [
+mingling = { version = "0.1.7", features = [
     "parser",
     "comp",
     "general_renderer",
@@ -35,4 +38,4 @@ just_fmt = "0.1.2"
 toml = "0.9.8"
 
 [build-dependencies]
-mingling = { path = "../mingling", features = ["comp"] }
+mingling = { version = "0.1.7", features = ["comp"] }
