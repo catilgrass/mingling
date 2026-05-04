@@ -13,27 +13,37 @@
             content="Quick start with Mingling and build your command-line program!"
         />
 
-        <link rel="stylesheet" href="css/vue.css" />
+        <link rel="stylesheet" href="css/light.css" />
+        <link id="dark-style" rel="stylesheet" href="css/dark.css" disabled />
     </head>
 
     <body>
         <nav>
-            <a href="https://docs.rs/mingling/latest/mingling/">Docs.rs</a>
             <a href="https://crates.io/crates/mingling">Crates.io</a>
-            |
-            <a href="https://github.com/CatilGrass/mingling">GitHub</a>
-            |
+            <a href="https://docs.rs/mingling/latest/mingling/">API Docs</a>
             <a href="https://git.catilgrass.cn/catilgrass/mingling.git"
                 ><b>Source</b></a
             >
-            |
-            <a href="./_zh_CN/"><b>🇨🇳CN Docs</b></a>
+            <a
+                href="#"
+                onclick="
+                    toggleTheme();
+                    return false;
+                "
+                >🌗 Theme</a
+            >
+            <a href="./_zh_CN/"><b>🇨🇳 CN Docs</b></a>
         </nav>
         <div id="app"></div>
 
         <script>
             window.$docsify = {
                 name: "Mingling Document",
+                repo: "true",
+                corner: {
+                    url: "https://github.com/catilgrass/mingling",
+                    icon: "github",
+                },
                 auto2top: true,
                 loadSidebar: true,
                 maxLevel: 0,
@@ -69,12 +79,16 @@
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-toml.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-rust.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/docsify-corner/dist/docsify-corner.js"></script>
         <script src="https://unpkg.com/docsify-plugin-flexible-alerts"></script>-->
         <script src="scripts/zoom-image.min.js"></script>
         <script src="scripts/search.js"></script>
         <script src="scripts/prism-bash.min.js"></script>
         <script src="scripts/prism-toml.min.js"></script>
         <script src="scripts/prism-rust.js"></script>
+        <script src="scripts/docsify-corner.js"></script>
         <script src="scripts/docsify-plugin-flexible-alerts.js"></script>
+
+        <script src="scripts/day-night-switch.js"></script>
     </body>
 </html>

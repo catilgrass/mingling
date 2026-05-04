@@ -13,27 +13,42 @@
             content="Quick start with Mingling and build your command-line program!"
         />
 
-        <link rel="stylesheet" href="../css/vue.css" />
+        <link rel="stylesheet" href="../css/light.css" />
+        <link
+            id="dark-style"
+            rel="stylesheet"
+            href="../css/dark.css"
+            disabled
+        />
     </head>
 
     <body>
         <nav>
-            <a href="https://docs.rs/mingling/latest/mingling/">Docs.rs</a>
-            <a href="https://crates.io/crates/mingling">Crates.io</a>
-            |
-            <a href="https://github.com/CatilGrass/mingling">GitHub</a>
-            |
+            <a href="https://crates.io/crates/mingling">发布页</a>
+            <a href="https://docs.rs/mingling/latest/mingling/">API文档</a>
             <a href="https://git.catilgrass.cn/catilgrass/mingling.git"
-                ><b>Source</b></a
+                ><b>源代码</b></a
             >
-            |
-            <a href="../"><b>EN Docs</b></a>
+            <a
+                href="#"
+                onclick="
+                    toggleTheme();
+                    return false;
+                "
+                >🌗 主题</a
+            >
+            <a href="../"><b>英文文档</b></a>
         </nav>
         <div id="app"></div>
 
         <script>
             window.$docsify = {
                 name: "Mingling 中文文档",
+                repo: "true",
+                corner: {
+                    url: "https://github.com/catilgrass/mingling",
+                    icon: "github",
+                },
                 auto2top: true,
                 loadSidebar: true,
                 maxLevel: 0,
@@ -68,6 +83,9 @@
         <script src="../scripts/prism-bash.min.js"></script>
         <script src="../scripts/prism-toml.min.js"></script>
         <script src="../scripts/prism-rust.js"></script>
+        <script src="../scripts/docsify-corner.js"></script>
         <script src="../scripts/docsify-plugin-flexible-alerts.js"></script>
+
+        <script src="../scripts/day-night-switch.js"></script>
     </body>
 </html>
