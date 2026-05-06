@@ -30,7 +30,7 @@ mingling = "0.1.7"
 # If you want the latest, try the version hosted on Github
 mingling = { git = "https://github.com/catilgrass/mingling", branch = "main" }
 ```
- 
+
 > [!NOTE]
 >
 > This version matches the **Mingling** version used when writing this doc. Check [crates.io](https://crates.io/crates/mingling) for the latest release! 😄 
@@ -53,7 +53,7 @@ fn main() {
 // then generates the `ThisProgram` struct
 mingling::macros::gen_program!();
 ```
- 
+
 > [!TIP]
 >
 > When `gen_program!()` expands, it gathers info from other components & types that were expanded before it. This means you must place `gen_program!()` at the very last expansion point in the crate.
@@ -78,7 +78,7 @@ dispatcher!("greet", GreetCommand => GreetEntry);
 // ...
 gen_program!();
 ```
- 
+
   Don't be scared by the sudden macro and two new types! Let me explain what this macro does:
 
 ##### About the `dispatcher!` macro 💡
@@ -112,7 +112,7 @@ fn main() {
     program.exec();
 }
 ```
- 
+
   Now `ThisProgram` recognizes the `"greet"` sub-command, but the framework still doesn't know what `"greet"` should do. That's where we implement the actual logic:
 
 
@@ -134,14 +134,14 @@ fn render_greet(_prev: GreetEntry) {
 // ...
 gen_program!(); // The renderer will be registered with the program
 ```
- 
+
   For functions marked with `#[renderer]`, **Mingling** strictly enforces only one function signature:
 
 ```rust
 #[renderer]
 fn renderer_name (_prev: PreviousType) {  }
 ```
- 
+
   The macro reads the type of the first param and tells `gen_program!` that this function renders that type.
 
 ##### About `r_println!()` 💡
@@ -180,7 +180,7 @@ fn render_greet_someone(prev: ResultGreetSomeone) {
     r_println!("Hello, {}!", *prev); 
 }
 ```
- 
+
   Just like `#[renderer]`, we created a `#[chain]` that processes type `GreetEntry` and outputs `ResultGreetSomeone`.
 
   This inserts a `Chain` between the original `Dispatcher` and `Renderer`: it extracts the user's input params (or falls back to "World"), then passes them to the renderer to print to the terminal.
@@ -204,7 +204,7 @@ fn render_greet_someone(prev: ResultGreetSomeone) {
 ```rust
 pack!(PackedType = RawType);
 ```
- 
+
   Note: `pack!` doesn't support types with lifetimes, because types are always moved (not borrowed) between dispatchers.
 
 
@@ -241,7 +241,7 @@ fn render_greet_someone(prev: ResultGreetSomeone) {
  
 gen_program!();
 ```
- 
+
   Output:
 
 ```bash
@@ -252,7 +252,7 @@ Hello, Alice!
 ```
 
   At this point, you have successfully created a basic **Mingling** command-line program. The next chapter will explain how to implement a fallback mechanism for your command-line program to handle cases where a command or renderer does not exist.
- 
+
 <p align="center" style="font-size: 0.85em; color: gray;">
     Written by @Weicao-CatilGrass
 </p>

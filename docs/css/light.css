@@ -949,3 +949,6 @@ code .token {
     overflow-y: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+.markdown-section pre code.lang-rust > span:nth-child(20) {
+    color: #ff5722 !important;
+}

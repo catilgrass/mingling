@@ -1021,3 +1021,6 @@ code .token {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     color: #f4fefe;
 }
+.markdown-section pre code.lang-rust > span:nth-child(20) {
+    color: #ff5722 !important;
+}
