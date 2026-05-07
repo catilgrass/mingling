@@ -1,5 +1,22 @@
 # Changelogs
 
+### Release 0.1.8
+
+#### Fixes:
+None
+
+#### Optimizings:
+None
+
+#### Features:
+
+1. **\[macros\]** The `gen_program!()` macro now generates `pub fn this() -> &'static Program<#name>` for the generated program type, providing convenient static accessors.
+
+#### **BREAKING CHANGES**:
+None
+
+--- 
+
 ### Release 0.1.7
 
 #### Fixes:

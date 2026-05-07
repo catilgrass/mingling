@@ -1220,8 +1220,14 @@ pub fn program_final_gen(input: TokenStream) -> TokenStream {
         }
 
         impl #name {
+            /// Creates a new `Program<#name>` instance with default configuration.
             pub fn new() -> ::mingling::Program<#name> {
                 ::mingling::Program::new()
+            }
+
+            /// Returns a static reference to the global `Program<#name>` singleton.
+            pub fn this() -> &'static ::mingling::Program<#name> {
+                &::mingling::this::<#name>()
             }
         }
     };
