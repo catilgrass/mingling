@@ -29,6 +29,7 @@ where
 
 impl<C: crate::program::ProgramCollect> Program<C> {
     /// Adds a dispatcher to the program.
+    #[cfg(not(feature = "dispatch_tree"))]
     pub fn with_dispatcher<Disp>(&mut self, dispatcher: Disp)
     where
         Disp: Dispatcher<C> + Send + Sync + 'static,
@@ -37,6 +38,7 @@ impl<C: crate::program::ProgramCollect> Program<C> {
     }
 
     /// Add some dispatchers to the program.
+    #[cfg(not(feature = "dispatch_tree"))]
     pub fn with_dispatchers<D>(&mut self, dispatchers: D)
     where
         D: Into<Dispatchers<C>>,

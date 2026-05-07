@@ -9,11 +9,18 @@ use crate::{
 pub mod error;
 
 #[cfg(feature = "async")]
-pub async fn exec<C>(program: &Program<C>) -> Result<RenderResult, ProgramInternalExecuteError>
+pub async fn exec<C>(
+    program: &'static Program<C>,
+) -> Result<RenderResult, ProgramInternalExecuteError>
 where
     C: ProgramCollect<Enum = C>,
 {
-    let mut current = dispatch_args_dynamic(program, program.args.clone())?;
+    #[cfg(not(feature = "dispatch_tree"))]
+    let mut current = dispatch_args_dynamic(program, &program.args)?;
+
+    #[cfg(feature = "dispatch_tree")]
+    let mut current = C::dispatch_args_trie(&program.args)?;
+
     let mut stop_next = false;
 
     // If the program has Help enabled, skip actual logic and jump to Help
@@ -54,11 +61,16 @@ where
 }
 
 #[cfg(not(feature = "async"))]
-pub fn exec<C>(program: &Program<C>) -> Result<RenderResult, ProgramInternalExecuteError>
+pub fn exec<C>(program: &'static Program<C>) -> Result<RenderResult, ProgramInternalExecuteError>
 where
     C: ProgramCollect<Enum = C>,
 {
-    let mut current = dispatch_args_dynamic(program, program.args.clone())?;
+    #[cfg(not(feature = "dispatch_tree"))]
+    let mut current = dispatch_args_dynamic(program, &program.args)?;
+
+    #[cfg(feature = "dispatch_tree")]
+    let mut current = C::dispatch_args_trie(&program.args)?;
+
     let mut stop_next = false;
 
     // If the program has Help enabled, skip actual logic and jump to Help
@@ -100,8 +112,8 @@ where
 
 /// Dynamically dispatch input arguments to registered entry types
 pub(crate) fn dispatch_args_dynamic<C>(
-    program: &Program<C>,
-    args: Vec<String>,
+    program: &'static Program<C>,
+    args: &Vec<String>,
 ) -> Result<AnyOutput<C>, ProgramInternalExecuteError>
 where
     C: ProgramCollect<Enum = C>,
@@ -126,9 +138,9 @@ where
 /// Match user input against registered dispatchers and return the matched dispatcher and remaining arguments.
 #[allow(clippy::type_complexity)]
 pub(crate) fn match_user_input<C>(
-    program: &Program<C>,
-    args: Vec<String>,
-) -> Result<(&(dyn Dispatcher<C> + Send + Sync), Vec<String>), ProgramInternalExecuteError>
+    program: &'static Program<C>,
+    args: &Vec<String>,
+) -> Result<(&'static (dyn Dispatcher<C> + Send + Sync), Vec<String>), ProgramInternalExecuteError>
 where
     C: ProgramCollect<Enum = C>,
 {

@@ -63,6 +63,8 @@ where
     pub(crate) collect: std::marker::PhantomData<C>,
 
     pub(crate) args: Vec<String>,
+
+    #[cfg(not(feature = "dispatch_tree"))]
     pub(crate) dispatcher: Vec<Box<dyn Dispatcher<C> + Send + Sync>>,
 
     pub stdout_setting: ProgramStdoutSetting,
@@ -101,12 +103,16 @@ where
         Program {
             collect: std::marker::PhantomData,
             args: args.into().into(),
+
+            #[cfg(not(feature = "dispatch_tree"))]
             dispatcher: Vec::new(),
+
             stdout_setting: Default::default(),
             user_context: Default::default(),
 
             #[cfg(feature = "general_renderer")]
             general_renderer_name: GeneralRendererSetting::Disable,
+
             resources: Arc::new(Mutex::new(HashMap::new())),
         }
     }
@@ -126,16 +132,18 @@ where
     }
 
     /// Get all registered dispatcher names from the program
-    pub fn get_nodes(&self) -> Vec<(String, &(dyn Dispatcher<C> + Send + Sync))> {
+    pub fn get_nodes(
+        &'static self,
+    ) -> Vec<(String, &'static (dyn Dispatcher<C> + Send + Sync + 'static))> {
         get_nodes(self)
     }
 
     /// Dynamically dispatch input arguments to registered entry types
     pub fn dispatch_args_dynamic(
-        &self,
+        &'static self,
         args: impl Into<StringVec>,
     ) -> Result<AnyOutput<C>, ChainProcessError> {
-        match exec::dispatch_args_dynamic(self, args.into().into()) {
+        match exec::dispatch_args_dynamic(self, &args.into().into()) {
             Ok(ok) => Ok(ok),
             Err(e) => Err(e.into()),
         }
@@ -287,6 +295,16 @@ pub trait ProgramCollect {
     /// Enum type representing internal IDs for the program
     type Enum: Display;
 
+    /// Use a prefix tree to quickly match arguments and dispatch to an Entry
+    #[cfg(feature = "dispatch_tree")]
+    fn dispatch_args_trie(
+        raw: &Vec<String>,
+    ) -> Result<AnyOutput<Self::Enum>, crate::error::ProgramInternalExecuteError>;
+
+    /// Get all registered dispatcher names from the program
+    #[cfg(feature = "dispatch_tree")]
+    fn get_nodes() -> Vec<(String, &'static (dyn Dispatcher<Self::Enum> + Send + Sync))>;
+
     /// Build an [AnyOutput](./struct.AnyOutput.html) to indicate that a renderer was not found
     fn build_renderer_not_found(member_id: Self::Enum) -> AnyOutput<Self::Enum>;
 
@@ -402,9 +420,13 @@ macro_rules! __dispatch_program_chains {
 
 /// Get all registered dispatcher names from the program
 pub fn get_nodes<C: ProgramCollect<Enum = C>>(
-    program: &Program<C>,
-) -> Vec<(String, &(dyn Dispatcher<C> + Send + Sync))> {
-    program
+    program: &'static Program<C>,
+) -> Vec<(String, &'static (dyn Dispatcher<C> + Send + Sync + 'static))> {
+    #[cfg(feature = "dispatch_tree")]
+    let r = C::get_nodes();
+
+    #[cfg(not(feature = "dispatch_tree"))]
+    let r = program
         .dispatcher
         .iter()
         .map(|disp| {
@@ -416,5 +438,7 @@ pub fn get_nodes<C: ProgramCollect<Enum = C>>(
                 .join(" ");
             (node_str, &**disp)
         })
-        .collect()
+        .collect();
+
+    return r;
 }
