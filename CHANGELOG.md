@@ -35,6 +35,8 @@ fn proc(prev: HelloEntry) -> ChainProcess<ThisProgram> {
 }
 ```
 
+3. **\[mingling\]** Added the `dispatch_tree` feature. When enabled, it will automatically generate a prefix tree, improving the command lookup efficiency from O(n) to O(len)
+
 #### **BREAKING CHANGES**:
 None
 
