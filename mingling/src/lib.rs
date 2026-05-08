@@ -137,3 +137,33 @@ pub use mingling_macros::Groupped;
 pub mod _mingling_examples {
     pub use crate::example_docs::*;
 }
+
+mod features;
+pub mod feature {
+    /// Whether the `async` feature is enabled
+    pub use crate::features::MINGLING_ASYNC;
+
+    /// Whether the `clap` feature is enabled
+    pub use crate::features::MINGLING_CLAP;
+
+    /// Whether the `comp` feature is enabled
+    pub use crate::features::MINGLING_COMP;
+
+    /// Whether the `debug` feature is enabled
+    pub use crate::features::MINGLING_DEBUG;
+
+    /// Whether the `dispatch_tree` feature is enabled
+    pub use crate::features::MINGLING_DISPATCH_TREE;
+
+    /// Whether the `general_renderer` feature is enabled
+    pub use crate::features::MINGLING_GENERAL_RENDERER;
+
+    /// Whether the `nightly` feature is enabled
+    pub use crate::features::MINGLING_NIGHTLY;
+
+    /// Whether the `parser` feature is enabled
+    pub use crate::features::MINGLING_PARSER;
+
+    /// Whether the `repl` feature is enabled
+    pub use crate::features::MINGLING_REPL;
+}

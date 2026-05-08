@@ -37,6 +37,15 @@ fn proc(prev: HelloEntry) -> ChainProcess<ThisProgram> {
 
 3. **\[mingling\]** Added the `dispatch_tree` feature. When enabled, it will automatically generate a prefix tree, improving the command lookup efficiency from O(n) to O(len)
 
+4. **\[mingling\]** Added `mingling::feature` module for runtime feature detection. You can now check which features are enabled at compile time:
+
+```rust
+// Example: Check if a feature is enabled
+if mingling::feature::MINGLING_ASYNC {
+    // async feature is enabled
+}
+```
+
 #### **BREAKING CHANGES**:
 None
 
