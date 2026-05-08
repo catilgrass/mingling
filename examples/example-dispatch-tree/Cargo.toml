@@ -1,0 +1,7 @@
+[package]
+name = "example-dispatch-tree"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+mingling = { path = "../../mingling", features = ["dispatch_tree", "comp"] }

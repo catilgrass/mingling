@@ -3,7 +3,7 @@
 //! # How to Deploy
 //! 1. Enable the `comp` feature
 //! ```toml
-//! mingling = { version = "0.1.5", features = [
+//! mingling = { version = "...", features = [
 //!     "comp",  // Enable this feature
 //!     "parser"
 //! ] }
