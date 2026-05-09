@@ -1,10 +1,6 @@
 #[doc(hidden)]
 pub mod chain;
 
-#[cfg(feature = "comp")]
-#[doc(hidden)]
-pub mod comp;
-
 #[doc(hidden)]
 pub mod dispatcher;
 

@@ -27,8 +27,6 @@ pub use crate::any::group::*;
 pub use crate::any::*;
 
 pub use crate::asset::chain::*;
-#[cfg(feature = "comp")]
-pub use crate::asset::comp::*;
 pub use crate::asset::dispatcher::*;
 pub use crate::asset::enum_tag::*;
 pub use crate::asset::global_resource::*;
@@ -64,3 +62,10 @@ pub mod build {
 
 /// Provided for framework developers
 pub mod debug;
+
+#[cfg(feature = "comp")]
+#[doc(hidden)]
+pub mod comp;
+
+#[cfg(feature = "comp")]
+pub use crate::comp::*;
