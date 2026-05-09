@@ -15,8 +15,7 @@ where
     C: ProgramCollect<Enum = C>,
 {
     fn setup(&mut self, program: &mut crate::Program<C>) {
-        program
-            .with_hook_anonymous(ProgramAnonymousHook::empty().on_finish(current_exit_code));
+        program.with_hook_anonymous(ProgramAnonymousHook::empty().on_finish(current_exit_code));
     }
 }
 

@@ -215,7 +215,10 @@ where
         }
         for anonymous_hook in &self.anonymous_hooks {
             if let Some(finish) = anonymous_hook.finish {
-                finish();
+                exit_code = finish();
+                if exit_code != 0 {
+                    return exit_code;
+                }
             }
         }
         exit_code
