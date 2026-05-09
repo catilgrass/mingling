@@ -207,7 +207,7 @@ where
     }
 
     /// Run the command line program
-    pub async fn exec(self)
+    pub async fn exec(self) -> i32
     where
         C: 'static + Send + Sync,
     {
@@ -217,28 +217,43 @@ where
             Err(e) => match e {
                 ProgramExecuteError::DispatcherNotFound => {
                     eprintln!("Dispatcher not found");
-                    return;
+                    return 1;
                 }
                 ProgramExecuteError::RendererNotFound(renderer_name) => {
                     eprintln!("Renderer `{}` not found", renderer_name);
-                    return;
+                    return 1;
                 }
                 ProgramExecuteError::Other(e) => {
                     eprintln!("{}", e);
-                    return;
+                    return 1;
                 }
             },
         };
 
         // Render result
         if stdout_setting.render_output && !result.is_empty() {
+            let exit_code = result.exit_code;
             print!("{}", result);
+
             if let Err(e) = std::io::Write::flush(&mut std::io::stdout())
                 && stdout_setting.error_output
             {
                 eprintln!("{}", e);
+                1
+            } else {
+                exit_code
             }
+        } else {
+            0
         }
+    }
+
+    /// Run the command line program, then exit
+    pub async fn exec_and_exit(self)
+    where
+        C: 'static + Send + Sync,
+    {
+        std::process::exit(self.exec().await)
     }
 }
 

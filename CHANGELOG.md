@@ -46,8 +46,19 @@ if mingling::feature::MINGLING_ASYNC {
 }
 ```
 
+5. **\[core\]** Added `with_hook` and `with_hook_anonymous` functions to embed callback events into the program lifecycle
+
+6. **\[core\]** Added `user_context.run_hook` configuration item to control whether the program runs hooks
+
+7. **\[core\]** Added `exec_and_exit`, which will return an `i32` exit code after the program ends
+
+8. **\[core\]** Added `ExitCodeSetup`, now you can use `mingling::update_exit_code(i32)` to control the exit code
+
+9. **\[core\]** `RenderResult` now carries new data `exit_code`
+
 #### **BREAKING CHANGES**:
-None
+
+1. **\[core\]** The signature of `exec` has been changed to `exec(self) -> i32` (previously was `exec(self)`)
 
 --- 
 

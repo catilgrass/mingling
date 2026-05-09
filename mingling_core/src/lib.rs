@@ -69,3 +69,6 @@ pub mod comp;
 
 #[cfg(feature = "comp")]
 pub use crate::comp::*;
+
+pub use crate::setup::exit_code_control::current_exit_code;
+pub use crate::setup::exit_code_control::update_exit_code;

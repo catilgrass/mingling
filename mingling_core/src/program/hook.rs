@@ -56,7 +56,18 @@ pub struct ProgramAnonymousHook {
     pub post_render: Option<fn(result: &RenderResult)>,
 
     /// Executes before the program ends
-    pub finish: Option<fn()>,
+    pub finish: Option<fn() -> i32>,
+}
+
+impl<C> Program<C>
+where
+    C: ProgramCollect<Enum = C>,
+{
+    /// Adds an anonymous hook to the program. The hook will be called at the appropriate
+    /// lifecycle events, but receives string representations instead of typed references.
+    pub fn with_hook_anonymous(&mut self, hook: ProgramAnonymousHook) {
+        self.anonymous_hooks.push(hook);
+    }
 }
 
 impl<C> Program<C>
@@ -67,12 +78,6 @@ where
     /// lifecycle events.
     pub fn with_hook(&mut self, hook: ProgramHook<C>) {
         self.hooks.push(hook);
-    }
-
-    /// Adds an anonymous hook to the program. The hook will be called at the appropriate
-    /// lifecycle events, but receives string representations instead of typed references.
-    pub fn with_hook_anonymous(&mut self, hook: ProgramAnonymousHook) {
-        self.anonymous_hooks.push(hook);
     }
 
     pub(crate) fn run_hook_on_begin(&self) {
@@ -342,7 +347,7 @@ impl ProgramAnonymousHook {
     }
 
     /// Sets the handler for the `finish` event.
-    pub fn on_finish(mut self, handler: fn()) -> Self {
+    pub fn on_finish(mut self, handler: fn() -> i32) -> Self {
         let _ = self.finish.insert(handler);
         self
     }
