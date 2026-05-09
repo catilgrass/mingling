@@ -35,13 +35,26 @@ impl Default for ProgramStdoutSetting {
 }
 
 /// Program user context
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct ProgramUserContext {
     /// View help information instead of running the command
     pub help: bool,
 
     /// Skip user confirmation step
     pub confirm: bool,
+
+    /// Execute hooks during the program lifecycle
+    pub run_hook: bool,
+}
+
+impl Default for ProgramUserContext {
+    fn default() -> Self {
+        Self {
+            help: false,
+            confirm: false,
+            run_hook: true,
+        }
+    }
 }
 
 #[cfg(feature = "general_renderer")]

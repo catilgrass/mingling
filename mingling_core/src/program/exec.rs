@@ -13,19 +13,31 @@ pub async fn exec<C>(
     program: &'static Program<C>,
 ) -> Result<RenderResult, ProgramInternalExecuteError>
 where
-    C: ProgramCollect<Enum = C>,
+    C: ProgramCollect<Enum = C> + std::fmt::Display,
 {
+    // Run hooks
+    program.run_hook_on_begin();
+    program.run_hook_pre_dispatch(&program.args);
+
     #[cfg(not(feature = "dispatch_tree"))]
     let mut current = dispatch_args_dynamic(program, &program.args)?;
 
     #[cfg(feature = "dispatch_tree")]
     let mut current = C::dispatch_args_trie(&program.args)?;
 
+    // Run hook
+    program.run_hook_post_dispatch(&current.member_id);
+
     let mut stop_next = false;
 
     // If the program has Help enabled, skip actual logic and jump to Help
     if program.user_context.help {
-        return Ok(render_help::<C>(program, current));
+        let mut render_result = render_help::<C>(program, current);
+
+        // Run hook
+        render_result.exit_code = program.run_hook_finish();
+
+        return Ok(render_result);
     }
 
     loop {
@@ -34,17 +46,42 @@ where
         current = {
             // If a chain exists, execute as a chain
             if C::has_chain(&current) {
+                // Run hook
+                program.run_hook_pre_chain(&current.member_id, current.inner.as_ref());
+
                 match C::do_chain(current).await {
                     ChainProcess::Ok((any, Next::Renderer)) => {
-                        return Ok(render::<C>(program, any));
+                        let mut render_result = render::<C>(program, any);
+
+                        // Run hook
+                        render_result.exit_code = program.run_hook_finish();
+
+                        return Ok(render_result);
                     }
-                    ChainProcess::Ok((any, Next::Chain)) => any,
-                    ChainProcess::Err(e) => return Err(e.into()),
+                    ChainProcess::Ok((any, Next::Chain)) => {
+                        // Run hook
+                        program.run_hook_post_chain(&any);
+                        any
+                    }
+                    ChainProcess::Err(e) => {
+                        // Run hook
+                        program.run_hook_finish();
+                        return Err(e.into());
+                    }
                 }
             }
             // If no chain exists, attempt to render
             else if C::has_renderer(&current) {
-                return Ok(render::<C>(program, current));
+                // Run hook
+                program.run_hook_pre_render(&current.member_id, current.inner.as_ref());
+
+                let mut render_result = render::<C>(program, current);
+
+                // Run hooks
+                program.run_hook_post_render(&render_result);
+                render_result.exit_code = program.run_hook_finish();
+
+                return Ok(render_result);
             }
             // No renderer exists
             else {
@@ -57,25 +94,42 @@ where
             break;
         }
     }
-    Ok(RenderResult::default())
+    let mut render_result = RenderResult::default();
+
+    // Run hook
+    render_result.exit_code = program.run_hook_finish();
+
+    Ok(render_result)
 }
 
 #[cfg(not(feature = "async"))]
 pub fn exec<C>(program: &'static Program<C>) -> Result<RenderResult, ProgramInternalExecuteError>
 where
-    C: ProgramCollect<Enum = C>,
+    C: ProgramCollect<Enum = C> + std::fmt::Display,
 {
+    // Run hooks
+    program.run_hook_on_begin();
+    program.run_hook_pre_dispatch(&program.args);
+
     #[cfg(not(feature = "dispatch_tree"))]
     let mut current = dispatch_args_dynamic(program, &program.args)?;
 
     #[cfg(feature = "dispatch_tree")]
     let mut current = C::dispatch_args_trie(&program.args)?;
 
+    // Run hook
+    program.run_hook_post_dispatch(&current.member_id);
+
     let mut stop_next = false;
 
     // If the program has Help enabled, skip actual logic and jump to Help
     if program.user_context.help {
-        return Ok(render_help::<C>(program, current));
+        let mut render_result = render_help::<C>(program, current);
+
+        // Run hook
+        render_result.exit_code = program.run_hook_finish();
+
+        return Ok(render_result);
     }
 
     loop {
@@ -84,17 +138,44 @@ where
         current = {
             // If a chain exists, execute as a chain
             if C::has_chain(&current) {
+                // Run hook
+                program.run_hook_pre_chain(&current.member_id, current.inner.as_ref());
+
                 match C::do_chain(current) {
                     ChainProcess::Ok((any, Next::Renderer)) => {
-                        return Ok(render::<C>(program, any));
+                        {
+                            let mut render_result = render::<C>(program, any);
+
+                            // Run hook
+                            render_result.exit_code = program.run_hook_finish();
+
+                            return Ok(render_result);
+                        };
                     }
-                    ChainProcess::Ok((any, Next::Chain)) => any,
-                    ChainProcess::Err(e) => return Err(e.into()),
+                    ChainProcess::Ok((any, Next::Chain)) => {
+                        // Run hook
+                        program.run_hook_post_chain(&any);
+                        any
+                    }
+                    ChainProcess::Err(e) => {
+                        // Run hook
+                        program.run_hook_finish();
+                        return Err(e.into());
+                    }
                 }
             }
             // If no chain exists, attempt to render
             else if C::has_renderer(&current) {
-                return Ok(render::<C>(program, current));
+                // Run hook
+                program.run_hook_pre_render(&current.member_id, current.inner.as_ref());
+
+                let mut render_result = render::<C>(program, current);
+
+                // Run hooks
+                program.run_hook_post_render(&render_result);
+                render_result.exit_code = program.run_hook_finish();
+
+                return Ok(render_result);
             }
             // No renderer exists
             else {
@@ -107,7 +188,12 @@ where
             break;
         }
     }
-    Ok(RenderResult::default())
+    let mut render_result = RenderResult::default();
+
+    // Run hook
+    render_result.exit_code = program.run_hook_finish();
+
+    Ok(render_result)
 }
 
 /// Dynamically dispatch input arguments to registered entry types

@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use crate::{ChainProcess, Program, asset::node::Node};
+use crate::{ChainProcess, Program, ProgramCollect, asset::node::Node};
 
 /// Dispatches user input commands to specific [ChainProcess](./enum.ChainProcess.html)
 ///
@@ -27,7 +27,10 @@ where
     }
 }
 
-impl<C: crate::program::ProgramCollect> Program<C> {
+impl<C> Program<C>
+where
+    C: ProgramCollect<Enum = C>,
+{
     /// Adds a dispatcher to the program.
     #[cfg(not(feature = "dispatch_tree"))]
     pub fn with_dispatcher<Disp>(&mut self, dispatcher: Disp)

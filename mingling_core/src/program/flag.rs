@@ -474,7 +474,7 @@ mod tests {
 
 impl<C> Program<C>
 where
-    C: ProgramCollect,
+    C: ProgramCollect<Enum = C>,
 {
     /// Registers a global argument (with value) and its handler.
     pub fn global_argument<F, A>(&mut self, arguments: A, mut do_fn: F)

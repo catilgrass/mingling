@@ -8,6 +8,7 @@ use std::{
 #[derive(Default, Debug, PartialEq)]
 pub struct RenderResult {
     render_text: String,
+    pub exit_code: i32,
 }
 
 impl Write for RenderResult {

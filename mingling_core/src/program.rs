@@ -11,6 +11,7 @@ use crate::{
     AnyOutput, ChainProcess, GlobalResources, Groupped, RenderResult,
     asset::dispatcher::Dispatcher,
     error::{ChainProcessError, ProgramExecuteError},
+    hook::{ProgramAnonymousHook, ProgramHook},
 };
 use std::{
     collections::HashMap,
@@ -23,6 +24,8 @@ use std::pin::Pin;
 
 #[doc(hidden)]
 pub mod exec;
+#[doc(hidden)]
+pub mod hook;
 #[doc(hidden)]
 pub mod setup;
 
@@ -41,7 +44,7 @@ static THIS_PROGRAM: OnceLock<Option<Box<dyn std::any::Any + Send + Sync>>> = On
 /// Returns a reference to the current program instance, panics if not set.
 pub fn this<C>() -> &'static Program<C>
 where
-    C: ProgramCollect + 'static,
+    C: ProgramCollect<Enum = C> + 'static,
 {
     try_get_this_program().expect("Program not initialized")
 }
@@ -49,7 +52,7 @@ where
 /// Returns a reference to the current program instance, if set.
 fn try_get_this_program<C>() -> Option<&'static Program<C>>
 where
-    C: ProgramCollect + 'static,
+    C: ProgramCollect<Enum = C> + 'static,
 {
     THIS_PROGRAM.get()?.as_ref()?.downcast_ref::<Program<C>>()
 }
@@ -58,7 +61,7 @@ where
 #[derive(Default)]
 pub struct Program<C>
 where
-    C: ProgramCollect,
+    C: ProgramCollect<Enum = C>,
 {
     pub(crate) collect: std::marker::PhantomData<C>,
 
@@ -72,6 +75,9 @@ where
 
     #[cfg(feature = "general_renderer")]
     pub general_renderer_name: GeneralRendererSetting,
+
+    pub(crate) hooks: Vec<ProgramHook<C>>,
+    pub(crate) anonymous_hooks: Vec<ProgramAnonymousHook>,
 
     pub(crate) resources: GlobalResources,
 }
@@ -112,6 +118,9 @@ where
 
             #[cfg(feature = "general_renderer")]
             general_renderer_name: GeneralRendererSetting::Disable,
+
+            hooks: Vec::new(),
+            anonymous_hooks: Vec::new(),
 
             resources: Arc::new(Mutex::new(HashMap::new())),
         }
@@ -167,7 +176,7 @@ where
 #[cfg(feature = "async")]
 impl<C> Program<C>
 where
-    C: ProgramCollect<Enum = C>,
+    C: ProgramCollect<Enum = C> + std::fmt::Display,
 {
     /// Sets the current program instance and runs the provided async function.
     async fn set_instance_and_run<F, Fut>(self, f: F) -> Fut::Output
@@ -237,7 +246,7 @@ where
 #[cfg(not(feature = "async"))]
 impl<C> Program<C>
 where
-    C: ProgramCollect<Enum = C>,
+    C: ProgramCollect<Enum = C> + Display,
 {
     /// Sets the current program instance and runs the provided function.
     fn set_instance_and_run<F, R>(self, f: F) -> R
@@ -266,7 +275,7 @@ where
     }
 
     /// Run the command line program
-    pub fn exec(self)
+    pub fn exec(self) -> i32
     where
         C: 'static + Send + Sync,
     {
@@ -276,28 +285,43 @@ where
             Err(e) => match e {
                 ProgramExecuteError::DispatcherNotFound => {
                     eprintln!("Dispatcher not found");
-                    return;
+                    return 1;
                 }
                 ProgramExecuteError::RendererNotFound(renderer_name) => {
                     eprintln!("Renderer `{}` not found", renderer_name);
-                    return;
+                    return 1;
                 }
                 ProgramExecuteError::Other(e) => {
                     eprintln!("{}", e);
-                    return;
+                    return 1;
                 }
             },
         };
 
         // Render result
         if stdout_setting.render_output && !result.is_empty() {
+            let exit_code = result.exit_code;
             print!("{}", result);
+
             if let Err(e) = std::io::Write::flush(&mut std::io::stdout())
                 && stdout_setting.error_output
             {
                 eprintln!("{}", e);
+                1
+            } else {
+                exit_code
             }
+        } else {
+            0
         }
+    }
+
+    /// Run the command line program, then exit
+    pub fn exec_and_exit(self)
+    where
+        C: 'static + Send + Sync,
+    {
+        std::process::exit(self.exec())
     }
 }
 
