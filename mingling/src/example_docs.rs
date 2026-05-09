@@ -1,67 +1,5 @@
 // Auto generated
 
-/// `Mingling` Example - Basic
-///
-///  # How to Run
-///  ```bash
-///  cargo run --manifest-path ./examples/example-basic/Cargo.toml -- hello World
-///  ```
-///
-/// Cargo.toml
-/// ```ignore
-/// [package]
-/// name = "example-basic"
-/// version = "0.0.1"
-/// edition = "2024"
-///
-/// [dependencies]
-/// mingling = { path = "../../mingling" }
-/// ```
-///
-/// main.rs
-/// ```ignore
-/// use mingling::macros::{chain, dispatcher, gen_program, pack, r_println, renderer};
-///
-/// // Define dispatcher `HelloCommand`, directing subcommand "hello" to `HelloEntry`
-/// dispatcher!("hello", HelloCommand => HelloEntry);
-///
-/// fn main() {
-///     // Create program
-///     let mut program = ThisProgram::new();
-///
-///     // Add dispatcher `HelloCommand`
-///     program.with_dispatcher(HelloCommand);
-///
-///     // Run program
-///     program.exec();
-/// }
-///
-/// // Register wrapper type `Hello`, setting inner to `String`
-/// pack!(Hello = String);
-///
-/// // Register chain to `ThisProgram`, handling logic from `HelloEntry`
-/// #[chain]
-/// fn parse_name(prev: HelloEntry) -> NextProcess {
-///     // Extract string from `HelloEntry` as argument
-///     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
-///
-///     // Build `Hello` type and route to renderer
-///     Hello::new(name).to_render()
-/// }
-///
-/// // Register renderer to `ThisProgram`, handling rendering of `Hello`
-/// #[renderer]
-/// fn render_hello_who(prev: Hello) {
-///     // Print message
-///     r_println!("Hello, {}!", *prev);
-///
-///     // Program ends here
-/// }
-///
-/// // Generate program, default is `ThisProgram`
-/// gen_program!();
-/// ```
-pub mod example_basic {}
 /// `Mingling` Example - Async
 ///
 ///  After enabling the `async` feature:
@@ -128,6 +66,68 @@ pub mod example_basic {}
 /// gen_program!();
 /// ```
 pub mod example_async {}
+/// `Mingling` Example - Basic
+///
+///  # How to Run
+///  ```bash
+///  cargo run --manifest-path ./examples/example-basic/Cargo.toml -- hello World
+///  ```
+///
+/// Cargo.toml
+/// ```ignore
+/// [package]
+/// name = "example-basic"
+/// version = "0.0.1"
+/// edition = "2024"
+///
+/// [dependencies]
+/// mingling = { path = "../../mingling" }
+/// ```
+///
+/// main.rs
+/// ```ignore
+/// use mingling::macros::{chain, dispatcher, gen_program, pack, r_println, renderer};
+///
+/// // Define dispatcher `HelloCommand`, directing subcommand "hello" to `HelloEntry`
+/// dispatcher!("hello", HelloCommand => HelloEntry);
+///
+/// fn main() {
+///     // Create program
+///     let mut program = ThisProgram::new();
+///
+///     // Add dispatcher `HelloCommand`
+///     program.with_dispatcher(HelloCommand);
+///
+///     // Run program
+///     program.exec();
+/// }
+///
+/// // Register wrapper type `Hello`, setting inner to `String`
+/// pack!(Hello = String);
+///
+/// // Register chain to `ThisProgram`, handling logic from `HelloEntry`
+/// #[chain]
+/// fn parse_name(prev: HelloEntry) -> NextProcess {
+///     // Extract string from `HelloEntry` as argument
+///     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
+///
+///     // Build `Hello` type and route to renderer
+///     Hello::new(name).to_render()
+/// }
+///
+/// // Register renderer to `ThisProgram`, handling rendering of `Hello`
+/// #[renderer]
+/// fn render_hello_who(prev: Hello) {
+///     // Print message
+///     r_println!("Hello, {}!", *prev);
+///
+///     // Program ends here
+/// }
+///
+/// // Generate program, default is `ThisProgram`
+/// gen_program!();
+/// ```
+pub mod example_basic {}
 /// `Mingling` Example - Completion
 ///
 ///  # How to Deploy
@@ -270,6 +270,69 @@ pub mod example_async {}
 /// gen_program!();
 /// ```
 pub mod example_completion {}
+/// `Mingling` Example - Dispatch Tree
+///
+///  # How to Deploy
+///  1. Enable the `dispatch_tree` feature (`comp` is optional)
+///  ```toml
+///  mingling = { version = "...", features = [
+///      "dispatch_tree",  // Enable this feature
+///      "comp" // optional
+///  ] }
+///  ```
+///
+///  2. Using `cargo expand`:
+///
+///  ```bash
+///  cargo expand --manifest-path examples/example-dispatch-tree/Cargo.toml > expanded.rs
+///  cat expanded.rs | grep dispatch_args_trie -A 264
+///  ```
+///
+/// Cargo.toml
+/// ```ignore
+/// [package]
+/// name = "example-dispatch-tree"
+/// version = "0.1.0"
+/// edition = "2024"
+///
+/// [dependencies]
+/// mingling = { path = "../../mingling", features = ["dispatch_tree", "comp"] }
+/// ```
+///
+/// main.rs
+/// ```ignore
+/// #![allow(unused_mut)]
+///
+/// use mingling::macros::{dispatcher, gen_program};
+///
+/// fn main() {
+///     let mut program = ThisProgram::new();
+///
+///     // After enabling `dispatch_tree`, this method will no longer exist
+///     // program.with_dispatcher(CommandGreet);
+///     //
+///     // The `CompletionDispatcher` automatically generated by `comp` will also be imported
+///     // automatically
+///     // program.with_dispatcher(CompletionDispatcher);
+///
+///     program.exec();
+/// }
+///
+/// dispatcher!("greet", CommandGreet => EntryGreet);
+/// dispatcher!("help", CommandHelp => EntryHelp);
+/// dispatcher!("quit", CommandQuit => EntryQuit);
+/// dispatcher!("list", CommandList => EntryList);
+/// dispatcher!("status", CommandStatus => EntryStatus);
+/// dispatcher!("save", CommandSave => EntrySave);
+/// dispatcher!("load", CommandLoad => EntryLoad);
+/// dispatcher!("config", CommandConfig => EntryConfig);
+/// dispatcher!("run", CommandRun => EntryRun);
+/// dispatcher!("debug", CommandDebug => EntryDebug);
+/// dispatcher!("version", CommandVersion => EntryVersion);
+///
+/// gen_program!();
+/// ```
+pub mod example_dispatch_tree {}
 /// `Mingling` Example - General Renderer
 ///
 ///  ## Step1 - Enable Feature
@@ -447,66 +510,3 @@ pub mod example_general_renderer {}
 /// gen_program!();
 /// ```
 pub mod example_picker {}
-/// `Mingling` Example - Dispatch Tree
-///
-///  # How to Deploy
-///  1. Enable the `dispatch_tree` feature (`comp` is optional)
-///  ```toml
-///  mingling = { version = "...", features = [
-///      "dispatch_tree",  // Enable this feature
-///      "comp" // optional
-///  ] }
-///  ```
-///
-///  2. Using `cargo expand`:
-///
-///  ```bash
-///  cargo expand --manifest-path examples/example-dispatch-tree/Cargo.toml > expanded.rs
-///  cat expanded.rs | grep dispatch_args_trie -A 264
-///  ```
-///
-/// Cargo.toml
-/// ```ignore
-/// [package]
-/// name = "example-dispatch-tree"
-/// version = "0.1.0"
-/// edition = "2024"
-///
-/// [dependencies]
-/// mingling = { path = "../../mingling", features = ["dispatch_tree", "comp"] }
-/// ```
-///
-/// main.rs
-/// ```ignore
-/// #![allow(unused_mut)]
-///
-/// use mingling::macros::{dispatcher, gen_program};
-///
-/// fn main() {
-///     let mut program = ThisProgram::new();
-///
-///     // After enabling `dispatch_tree`, this method will no longer exist
-///     // program.with_dispatcher(CommandGreet);
-///     //
-///     // The `CompletionDispatcher` automatically generated by `comp` will also be imported
-///     // automatically
-///     // program.with_dispatcher(CompletionDispatcher);
-///
-///     program.exec();
-/// }
-///
-/// dispatcher!("greet", CommandGreet => EntryGreet);
-/// dispatcher!("help", CommandHelp => EntryHelp);
-/// dispatcher!("quit", CommandQuit => EntryQuit);
-/// dispatcher!("list", CommandList => EntryList);
-/// dispatcher!("status", CommandStatus => EntryStatus);
-/// dispatcher!("save", CommandSave => EntrySave);
-/// dispatcher!("load", CommandLoad => EntryLoad);
-/// dispatcher!("config", CommandConfig => EntryConfig);
-/// dispatcher!("run", CommandRun => EntryRun);
-/// dispatcher!("debug", CommandDebug => EntryDebug);
-/// dispatcher!("version", CommandVersion => EntryVersion);
-///
-/// gen_program!();
-/// ```
-pub mod example_dispatch_tree {}

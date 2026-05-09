@@ -133,7 +133,7 @@ thread 'main' (90772) panicked at src/bin/your-bin.rs:30:5:
 Renderer "ResultGreetSomeone" not found!
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
-
+ 
   以上便是 **Mingling** 的回退机制，在接下来的章节中，您将学习如何使用 `Picker` 解析复杂的用户输入。
 
 <p align="center" style="font-size: 0.85em; color: gray;">

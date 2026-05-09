@@ -250,7 +250,7 @@ Hello, World!
 ~> your-bin greet Alice
 Hello, Alice!
 ```
-
+ 
   At this point, you have successfully created a basic **Mingling** command-line program. The next chapter will explain how to implement a fallback mechanism for your command-line program to handle cases where a command or renderer does not exist.
  
 <p align="center" style="font-size: 0.85em; color: gray;">

@@ -12,7 +12,7 @@
 ```rust
 let name = args.first().cloned().unwrap_or_else(|| "World".to_string());
 ```
-
+ 
   而本章节将会引入新的 **Mingling** 特性：`Picker`，它提供轻量且和 **Mingling** 类型路由高度契合的命令解析方案。
 
   要启用 `Picker`，您需要修改 `Cargo.toml` ✏️
@@ -24,7 +24,7 @@ mingling = {
     features = ["parser"] 
 }
 ```
-
+ 
   好了，多的不说，让我们上手编辑代码，重写前文的解析代码 ✏️
   
 ```rust
@@ -40,7 +40,7 @@ fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
     ResultGreetSomeone::new(name)
 }
 ```
-
+ 
   `Picker` 为所有 `Into<Vec<String>>` 实现了 `pick` `pick_or` `pick_or_route` 函数：它们可以语义化地从字符串列表中 **拾取 (Pick)** 参数，并转换为结构化数据。
   
   对于上述示例中的代码：
@@ -48,7 +48,7 @@ fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
 ```rust
 prev.pick_or((), "World").unpack();
 ```
-
+ 
   它的语义为：
   
 ```rust
@@ -60,7 +60,7 @@ prev.pick_or((), "World").unpack();
 // |    |______________________ 拾取或使用默认
 // |___________________________ 从前一个输入中                
 ```
-
+ 
 ## 解析标志参数
 
   若您的程序设计需要解析标志参数 (例如：`greet --name Alice`)，可以使用如下方式：
@@ -68,7 +68,7 @@ prev.pick_or((), "World").unpack();
 ```rust
 prev.pick_or(["--name", "-n"], "World").unpack();
 ```
-
+ 
   同理，它的语义为：
   
 ```rust
@@ -80,7 +80,7 @@ prev.pick_or(["--name", "-n"], "World").unpack();
 // |    |____________________________________ 拾取或使用默认
 // |_________________________________________ 从前一个输入中                
 ```
-
+ 
 ## 关于 `.unpack()` 💡
 
   您可能注意到了，`Picker` 在命令解析的最后，会执行一个 `.unpack()` 函数，它的作用是将前面解析出来的结果，转换为结构化信息。
@@ -94,10 +94,10 @@ let (name, age, id) = prev
     .pick::<u8>(["--age", "-a"])
     .pick::<u32>(["--id", "-I"])
     .unpack();
-
+ 
 // 可解析参数 --name Alice --age 21 --id 0711251
 ```
-
+ 
 > [!IMPORTANT]
 > `Picker` 对解析顺序极其敏感，特别是位置参数：因为它是顺序解析的
 >
@@ -146,7 +146,7 @@ fn render_greet_someone(prev: ResultGreetSomeone) {
     r_println!("Hello, {}!", *prev);
 }
 ```
-
+ 
   若使用 `pick_or_route`，写法会变得相对复杂：因为 `.unpack()` 不再直接返回参数，而是 `Result<Value, Route>`
   
   不过 **Mingling** 提供了简化展开的宏 `route!`，它不复杂，只是省略了一部分样板代码：
@@ -160,7 +160,7 @@ let name = match pick_result {
     Err(e) => return e,
 };
 ```
-
+ 
 ## 提取值的后处理
 
   在您使用 `pick` 提取了用户输入后，可以使用 `after` 或 `after_or_route` 立刻处理该参数 ✏️
@@ -182,7 +182,7 @@ fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
     ResultGreetSomeone::new(name) // 此处传入的 name 已被格式化处理
 }
 ```
-
+ 
   同样，您可以使用 `after_or_route` 来处理输入参数的格式错误 ✏️
 
 ```rust
@@ -227,7 +227,7 @@ fn render_greet_someone(prev: ResultGreetSomeone) {
     r_println!("Hello, {}!", *prev);
 }
 ```
-
+ 
 ## 布尔值解析
 
   `Picker` 当然也可以解析 **布尔类型**，但是布尔类型分为显式和隐式模式，
@@ -251,7 +251,7 @@ fn handle_some_entry(prev: SomeEntry) -> NextProcess {
     // 其他逻辑
 }
 ```
-
+ 
 ## 特殊用法：`usize` 解析
 
   **Mingling** 为 `usize` 提供了一个特殊的用法：解析类似 `25G`、`32mb` 等字样 ✏️
@@ -264,7 +264,7 @@ fn parse_size() {
     assert_eq!(size, 25 * 1024 * 1024);
 }
 ```
-
+ 
 ## 自定义可解析类型
 
   您可以使用 `Pickable` trait 使您的类型支持被 `Picker` 解析，这也是 `Picker` 拓展性的来源 ✏️
@@ -292,7 +292,7 @@ impl Pickable for Address {
     }
 }
 ```
-
+ 
   我们为 `Address` 实现 `Pickable`：接下来我们便可以使用 `ip:port` 的方式来输入参数了 ✏️
 
 ```rust
@@ -312,14 +312,14 @@ fn render_connected(prev: ResultConnected) {
     r_println!("Connected: IP: {} PORT: {}", addr.ip, addr.port);
 }
 ```
-
+ 
   执行效果如下：
   
 ```bash
 ~> your-bin connect --addr 127.0.0.1:8080
 Connected: IP: 127.0.0.1 PORT: 8080
 ```
-
+ 
 ## 自动为枚举实现 Pickable
 
   要为枚举类型实现 `Pickable` trait，无需手动实现：`Picker` 会为所有实现了 `PickableEnum` 的类型实现 `Pickable`，只需要该枚举类型实现了 `EnumTag` ✏️
@@ -339,7 +339,7 @@ pub enum Fruits {
 // 为 Fruits 实现 PickableEnum
 impl PickableEnum for Fruits {}
 ```
-
+ 
   接下来您便可以直接使用 `Picker` 解析该类型 ✏️
   
 ```rust
@@ -356,7 +356,7 @@ fn render_ate_fruit(prev: ResultFruit) {
     r_println!("Picked fruit: {:?}", *prev);
 }
 ```
-
+ 
   以上便是 `Picker` 的所有用法，在下一章节，我会介绍如何在 **Mingling** 内为命令实现帮助文档。
 
 <p align="center" style="font-size: 0.85em; color: gray;">

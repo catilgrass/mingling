@@ -1,13 +1,15 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 
+use tools::println_cargo_style;
+
 const PAGES_ROOT: &str = "./docs/pages";
 const SIDEBAR_PATH: &str = "./docs/_sidebar.md";
 
 const SIDEBAR_HEAD: &str = "- [Welcome!](README)\n";
 
 fn main() {
-    println!("Refreshing _sidebar.md");
+    println_cargo_style!("Refresh: _sidebar.md");
     gen_sidebar();
     gen_translation_sidebars();
 }
@@ -21,7 +23,7 @@ fn gen_sidebar() {
 
     let sidebar_path = repo_root.join(SIDEBAR_PATH);
     std::fs::write(&sidebar_path, lines).unwrap();
-    println!("  Generated: {}", sidebar_path.display());
+    println_cargo_style!("Generated: {}", sidebar_path.display());
 }
 
 /// Generate _sidebar.md inside translation directories
@@ -48,7 +50,7 @@ fn gen_translation_sidebars() {
 
                 let sidebar_path = path.join("_sidebar.md");
                 std::fs::write(&sidebar_path, lines).unwrap();
-                println!("  Generated: {}", sidebar_path.display());
+                println_cargo_style!("Generated: {}", sidebar_path.display());
             }
         }
     }

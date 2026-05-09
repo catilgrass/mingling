@@ -1,6 +1,8 @@
 use std::fs;
 use std::path::Path;
 
+use tools::println_cargo_style;
+
 /// Docsify code blocks require that blank lines before and after code blocks are not completely empty,
 /// but must contain at least one space, otherwise code block rendering will have issues.
 ///
@@ -9,7 +11,7 @@ use std::path::Path;
 const DOCS_DIR: &str = "./docs";
 
 fn main() {
-    println!("Fixing code box empty lines in docs/**/*.md ...");
+    println_cargo_style!("Fixing: code box empty lines in docs/**/*.md ...");
     let repo_root = find_git_repo().expect("Cannot find git repo root");
     let docs_dir = repo_root.join(DOCS_DIR);
 
@@ -32,15 +34,16 @@ fn main() {
         let new_content = fix_code_box_empty_lines(&content);
         if new_content != content {
             fs::write(path, &new_content).unwrap();
-            println!("  Fixed: {}", path.display());
+            println_cargo_style!("Fixed: {}", path.display());
             fixed_count += 1;
         }
         file_count += 1;
     });
 
-    println!(
-        "Done. Scanned {} files, fixed {} files.",
-        file_count, fixed_count
+    println_cargo_style!(
+        "Done: Scanned {} files, fixed {} files.",
+        file_count,
+        fixed_count
     );
 }
 

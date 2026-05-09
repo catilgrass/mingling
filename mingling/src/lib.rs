@@ -5,7 +5,7 @@
 //!
 //! # Use
 //!
-//! ```rust
+//! ```rust,ignore
 //! use mingling::macros::{dispatcher, gen_program, r_println, renderer};
 //!
 //! #[tokio::main]

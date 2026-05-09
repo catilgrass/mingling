@@ -2,6 +2,7 @@ use std::path::Path;
 
 use just_fmt::snake_case;
 use just_template::{Template, tmpl};
+use tools::println_cargo_style;
 
 const EXAMPLE_ROOT: &str = "./examples/";
 const OUTPUT_PATH: &str = "./mingling/src/example_docs.rs";
@@ -9,10 +10,7 @@ const OUTPUT_PATH: &str = "./mingling/src/example_docs.rs";
 const TEMPLATE_CONTENT: &str = include_str!("../../../mingling/src/example_docs.rs.tmpl");
 
 fn main() {
-    {
-        println!("Refreshing Examples");
-        gen_example_doc_module();
-    }
+    gen_example_doc_module();
 }
 
 fn gen_example_doc_module() {
@@ -32,6 +30,8 @@ fn gen_example_doc_module() {
         }
     }
 
+    examples.sort();
+
     for example in examples {
         tmpl!(template += {
             examples {
@@ -43,7 +43,7 @@ fn gen_example_doc_module() {
                 )
             }
         });
-        println!("  Refresh: {}", example.name);
+        println_cargo_style!("Refresh: {}", example.name);
     }
 
     let template_str = template.to_string();
@@ -62,6 +62,26 @@ struct ExampleContent {
     code: String,
     cargo_toml: String,
 }
+
+impl PartialOrd for ExampleContent {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for ExampleContent {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.name.cmp(&other.name)
+    }
+}
+
+impl PartialEq for ExampleContent {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name
+    }
+}
+
+impl Eq for ExampleContent {}
 
 impl ExampleContent {
     pub fn read(name: &str) -> Self {
