@@ -2,11 +2,17 @@ mod flags;
 mod shell_ctx;
 mod suggest;
 
+#[cfg(feature = "builds")]
+mod installation;
+
 use std::collections::BTreeSet;
 use std::fmt::Display;
 
 #[doc(hidden)]
 pub use flags::*;
+#[cfg(feature = "builds")]
+#[doc(hidden)]
+pub use installation::*;
 #[doc(hidden)]
 pub use shell_ctx::*;
 #[doc(hidden)]

@@ -149,6 +149,7 @@ dependencies = [
 name = "mingling_core"
 version = "0.1.8"
 dependencies = [
+ "dirs",
  "just_fmt",
  "just_template",
  "once_cell",

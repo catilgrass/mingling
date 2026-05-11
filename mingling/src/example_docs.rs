@@ -133,13 +133,23 @@ pub mod example_basic {}
 ///  # How to Deploy
 ///  1. Enable the `comp` feature
 ///  ```toml
+///  [dependencies]
 ///  mingling = { version = "...", features = [
 ///      "comp",  // Enable this feature
 ///      "parser"
 ///  ] }
 ///  ```
 ///
-///  2. Write `build.rs` to generate completion scripts at compile time
+///  2. Add `mingling` as a build dependency, enabling the `builds` and `comp` features
+///  ```toml
+///  [build-dependencies]
+///  mingling = { version = "...", features = [
+///      "builds", // Enable this feature for build scripts
+///      "comp"
+///  ] }
+///  ```
+///
+///  3. Write `build.rs` to generate completion scripts at compile time
 ///  ```ignore
 ///  use mingling::build::{build_comp_scripts, build_comp_scripts_with_bin_name};
 ///  fn main() {
@@ -151,8 +161,8 @@ pub mod example_basic {}
 ///  }
 ///  ```
 ///
-///  3. Write `main.rs`, adding completion logic for your command entry point
-///  4. Execute `cargo install --path ./`, then run the corresponding completion script in your shell
+///  4. Write `main.rs`, adding completion logic for your command entry point
+///  5. Execute `cargo install --path ./`, then run the corresponding completion script in your shell
 ///
 /// Cargo.toml
 /// ```ignore

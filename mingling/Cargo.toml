@@ -16,12 +16,13 @@ tokio = { version = "1", features = ["full"] }
 mingling = { path = ".", features = ["comp", "general_renderer", "parser"] }
 
 [package.metadata.docs.rs]
-features = ["general_renderer", "repl", "comp", "parser"]
+features = ["builds", "general_renderer", "repl", "comp", "parser"]
 
 [features]
 nightly = ["mingling_core/nightly", "mingling_macros/nightly"]
 debug = ["mingling_core/debug"]
 async = ["mingling_core/async", "mingling_macros/async"]
+builds = ["mingling_core/builds"]
 
 default = ["mingling_core/default", "mingling_macros/default"]
 

@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use just_template::tmpl_param;
 
 use crate::ShellFlag;
@@ -82,6 +84,27 @@ pub fn build_comp_script_to(
     std::fs::create_dir_all(&target_path)?;
     let output_path = target_path.join(format!("{}_comp{}", bin_name, ext));
     std::fs::write(&output_path, tmpl.to_string())
+}
+
+/// Generate a shell completion script and write it to a specified file path.
+///
+/// This function takes a shell flag, a binary name, and an output file path,
+/// selects the appropriate template, substitutes the binary name into the template,
+/// and writes the resulting completion script directly to the specified file path.
+///
+/// # Example
+/// ```
+/// build_comp_script_to_file(&ShellFlag::Bash, "myapp", "target/completions/myapp_comp.sh").unwrap();
+/// ```
+pub fn build_comp_script_to_file(
+    shell_flag: &ShellFlag,
+    bin_name: &str,
+    output_path: impl Into<PathBuf>,
+) -> Result<(), std::io::Error> {
+    let (tmpl_str, _ext) = get_tmpl(shell_flag);
+    let mut tmpl = just_template::Template::from(tmpl_str);
+    tmpl_param!(tmpl, bin_name = bin_name);
+    std::fs::write(output_path.into(), tmpl.to_string())
 }
 
 fn get_tmpl(shell_flag: &ShellFlag) -> (&'static str, &'static str) {

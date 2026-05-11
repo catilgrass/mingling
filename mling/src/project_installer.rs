@@ -44,9 +44,7 @@ pub fn install_this_project(
             .current_dir(workspace_root)
             .status()?;
         if !status.success() {
-            return Err(std::io::Error::other(
-                "exec `cargo clean` failed",
-            ));
+            return Err(std::io::Error::other("exec `cargo clean` failed"));
         }
     }
 
@@ -56,9 +54,7 @@ pub fn install_this_project(
         .current_dir(workspace_root)
         .status()?;
     if !status.success() {
-        return Err(std::io::Error::other(
-            "cargo build --release failed",
-        ));
+        return Err(std::io::Error::other("cargo build --release failed"));
     }
 
     // Parse package.name from workspace_root's Cargo.toml as namespace

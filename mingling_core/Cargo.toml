@@ -10,6 +10,7 @@ repository = "https://github.com/catilgrass/mingling"
 nightly = []
 default = []
 async = []
+builds = ["dep:dirs"]
 
 dispatch_tree = []
 general_renderer = [
@@ -30,6 +31,8 @@ just_fmt = "0.1.2"
 thiserror = "2"
 
 once_cell = "1.21.4"
+
+dirs = { version = "6", optional = true }
 
 # comp
 just_template = { version = "0.1.3", optional = true }

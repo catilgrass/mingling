@@ -51,10 +51,12 @@ pub mod setup {
     pub use crate::program::setup::*;
 }
 
+#[cfg(feature = "builds")]
 #[doc(hidden)]
 pub mod builds;
 
 /// Provides build scripts for users
+#[cfg(feature = "builds")]
 pub mod build {
     #[cfg(feature = "comp")]
     pub use crate::builds::comp::*;

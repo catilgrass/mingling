@@ -24,6 +24,7 @@ strip = true
 
 [dependencies]
 mingling = { path = "../mingling", features = [
+    "builds",
     "parser",
     "comp",
     "general_renderer",
