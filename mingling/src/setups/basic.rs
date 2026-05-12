@@ -1,7 +1,4 @@
-use crate::{
-    ProgramCollect,
-    program::{Program, setup::ProgramSetup},
-};
+use mingling_core::{Program, ProgramCollect, setup::ProgramSetup};
 
 /// Performs basic program initialization:
 ///

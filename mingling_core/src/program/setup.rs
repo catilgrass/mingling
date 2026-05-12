@@ -1,18 +1,5 @@
 use crate::{ProgramCollect, program::Program};
 
-mod basic;
-pub use basic::*;
-
-#[doc(hidden)]
-pub mod exit_code_control;
-pub use exit_code_control::ExitCodeSetup;
-
-#[cfg(feature = "general_renderer")]
-mod general_renderer;
-
-#[cfg(feature = "general_renderer")]
-pub use general_renderer::*;
-
 pub trait ProgramSetup<C>
 where
     C: ProgramCollect<Enum = C>,

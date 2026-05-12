@@ -11,11 +11,10 @@ use crate::{
     AnyOutput, ChainProcess, GlobalResources, Groupped, RenderResult,
     asset::dispatcher::Dispatcher,
     error::{ChainProcessError, ProgramExecuteError},
-    hook::{ProgramAnonymousHook, ProgramHook},
+    hook::ProgramHook,
 };
 use std::{
     collections::HashMap,
-    fmt::Display,
     sync::{Arc, Mutex, OnceLock},
 };
 
@@ -77,7 +76,6 @@ where
     pub general_renderer_name: GeneralRendererSetting,
 
     pub(crate) hooks: Vec<ProgramHook<C>>,
-    pub(crate) anonymous_hooks: Vec<ProgramAnonymousHook>,
 
     pub(crate) resources: GlobalResources,
 }
@@ -120,7 +118,6 @@ where
             general_renderer_name: GeneralRendererSetting::Disable,
 
             hooks: Vec::new(),
-            anonymous_hooks: Vec::new(),
 
             resources: Arc::new(Mutex::new(HashMap::new())),
         }
@@ -176,7 +173,7 @@ where
 #[cfg(feature = "async")]
 impl<C> Program<C>
 where
-    C: ProgramCollect<Enum = C> + std::fmt::Display,
+    C: ProgramCollect<Enum = C>,
 {
     /// Sets the current program instance and runs the provided async function.
     async fn set_instance_and_run<F, Fut>(self, f: F) -> Fut::Output
@@ -261,7 +258,7 @@ where
 #[cfg(not(feature = "async"))]
 impl<C> Program<C>
 where
-    C: ProgramCollect<Enum = C> + Display,
+    C: ProgramCollect<Enum = C>,
 {
     /// Sets the current program instance and runs the provided function.
     fn set_instance_and_run<F, R>(self, f: F) -> R
@@ -345,7 +342,7 @@ where
 /// Note: It is recommended to use the `gen_program!()` macro from [mingling_macros](https://crates.io/crates/mingling_macros) to automatically create this type
 pub trait ProgramCollect {
     /// Enum type representing internal IDs for the program
-    type Enum: Display;
+    type Enum;
     type DispatcherNotFound: Groupped<Self::Enum>;
     type RendererNotFound: Groupped<Self::Enum>;
 

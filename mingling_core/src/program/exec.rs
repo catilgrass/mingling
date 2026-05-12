@@ -13,7 +13,7 @@ pub async fn exec<C>(
     program: &'static Program<C>,
 ) -> Result<RenderResult, ProgramInternalExecuteError>
 where
-    C: ProgramCollect<Enum = C> + std::fmt::Display,
+    C: ProgramCollect<Enum = C>,
 {
     // Run hooks
     program.run_hook_on_begin();
@@ -105,7 +105,7 @@ where
 #[cfg(not(feature = "async"))]
 pub fn exec<C>(program: &'static Program<C>) -> Result<RenderResult, ProgramInternalExecuteError>
 where
-    C: ProgramCollect<Enum = C> + std::fmt::Display,
+    C: ProgramCollect<Enum = C>,
 {
     // Run hooks
     program.run_hook_on_begin();

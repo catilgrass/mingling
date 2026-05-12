@@ -167,3 +167,11 @@ pub mod feature {
     /// Whether the `repl` feature is enabled
     pub use crate::features::MINGLING_REPL;
 }
+
+mod setups;
+
+pub mod setup {
+    pub use crate::setups::*;
+}
+
+pub mod res;

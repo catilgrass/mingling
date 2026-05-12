@@ -46,11 +46,6 @@ pub use crate::program::*;
 
 pub use crate::renderer::render_result::*;
 
-/// `Mingling`'s Program initialization system
-pub mod setup {
-    pub use crate::program::setup::*;
-}
-
 #[cfg(feature = "builds")]
 #[doc(hidden)]
 pub mod builds;
@@ -72,5 +67,6 @@ pub mod comp;
 #[cfg(feature = "comp")]
 pub use crate::comp::*;
 
-pub use crate::setup::exit_code_control::current_exit_code;
-pub use crate::setup::exit_code_control::update_exit_code;
+pub mod setup {
+    pub use crate::program::setup::ProgramSetup;
+}

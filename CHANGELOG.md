@@ -46,13 +46,22 @@ if mingling::feature::MINGLING_ASYNC {
 }
 ```
 
-5. **\[core\]** Added `with_hook` and `with_hook_anonymous` functions to embed callback events into the program lifecycle
+5. **\[core\]** Added `with_hook` functions to embed callback events into the program lifecycle
 
 6. **\[core\]** Added `user_context.run_hook` configuration item to control whether the program runs hooks
 
 7. **\[core\]** Added `exec_and_exit`, which will return an `i32` exit code after the program ends
 
-8. **\[core\]** Added `ExitCodeSetup`, now you can use `mingling::update_exit_code(i32)` to control the exit code
+8. **\[core\]** Added `ExitCodeSetup`, you can control the program's exit code by modifying the `mingling::res::ExitCode` resource
+
+```rust
+#[chain]
+fn your_chain(_prev: Prev) -> NextProcess {
+    // Use `modify_res` to modify the value of `ExitCode`
+    this::<ThisProgram>().modify_res(|r: &mut ExitCode| r.exit_code = 1);
+    // ...
+}
+```
 
 9. **\[core\]** `RenderResult` now carries new data `exit_code`
 
