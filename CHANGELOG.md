@@ -11,7 +11,6 @@ None
 #### Features:
 
 1. **\[macros\]** The `gen_program!()` macro now generates `pub fn this() -> &'static Program<#name>` for the generated program type, providing convenient static accessors.
-
 2. **\[macros\]** The `#[chain]` macro now supports resource injection parameters (2nd to Nth). When you write:
 
 ```rust
@@ -47,11 +46,8 @@ if mingling::feature::MINGLING_ASYNC {
 ```
 
 5. **\[core\]** Added `with_hook` functions to embed callback events into the program lifecycle
-
 6. **\[core\]** Added `user_context.run_hook` configuration item to control whether the program runs hooks
-
 7. **\[core\]** Added `exec_and_exit`, which will return an `i32` exit code after the program ends
-
 8. **\[core\]** Added `ExitCodeSetup`, you can control the program's exit code by modifying the `mingling::res::ExitCode` resource
 
 ```rust
@@ -59,6 +55,9 @@ if mingling::feature::MINGLING_ASYNC {
 fn your_chain(_prev: Prev) -> NextProcess {
     // Use `modify_res` to modify the value of `ExitCode`
     this::<ThisProgram>().modify_res(|r: &mut ExitCode| r.exit_code = 1);
+
+    // Or use:
+    mingling::res::update_exit_code::<ThisProgram>(1);
     // ...
 }
 ```
@@ -102,7 +101,6 @@ struct YourCommandEntry {
 ```
 
 3. **\[clap\]** Added the `stdout_setting.clap_help_print_behaviour` configuration item to `Program`, used to control the behavior of Clap Help
-
 4. **\[core\]** Added function `new_with_args` to `Program`
 5. **\[core\]** Added function `dispatch_args_dynamic` to `Program`
 6. **\[core\]** Impl `std::io::Write` trait for `RenderResult`

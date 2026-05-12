@@ -13,9 +13,8 @@
 
 use mingling::{
     macros::{chain, dispatcher, gen_program, pack, r_println, renderer},
-    res::ExitCode,
+    res::update_exit_code,
     setup::ExitCodeSetup,
-    this,
 };
 
 fn main() {
@@ -30,7 +29,7 @@ pack!(ResultError = ());
 
 #[chain]
 fn handle_error_entry(_prev: ErrorEntry) -> NextProcess {
-    this::<ThisProgram>().modify_res(|r: &mut ExitCode| r.exit_code = 1);
+    update_exit_code::<ThisProgram>(1);
     return ResultError::default();
 }
 
