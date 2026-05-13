@@ -33,8 +33,8 @@ where
 
         // Insert hook to override exit code before program ends
         program.with_hook(ProgramHook::empty().on_finish(|| {
-            let this = this::<C>().res_or_default();
-            *this
+            let this = this::<C>().res_or_default::<ExitCode>();
+            this.exit_code
         }));
     }
 }
