@@ -38,11 +38,17 @@ fn ci() -> Result<(), i32> {
     build_all()?;
     clippy_all()?;
     test_all()?;
+    test_examples()?;
     docs_refresh()?;
 
     run_cmd!("git add --renormalize .")?;
 
     Ok(())
+}
+
+fn test_examples() -> Result<(), i32> {
+    println_cargo_style!("Testing: examples");
+    run_cmd!("cargo run --manifest-path dev_tools/Cargo.toml --bin test-examples")
 }
 
 fn build_all() -> Result<(), i32> {
