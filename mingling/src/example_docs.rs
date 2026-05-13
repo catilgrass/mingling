@@ -371,7 +371,7 @@ pub mod example_dispatch_tree {}
 /// ```ignore
 /// use mingling::{
 ///     macros::{chain, dispatcher, gen_program, pack, r_println, renderer},
-///     res::update_exit_code,
+///     res::{exit_code, update_exit_code},
 ///     setup::ExitCodeSetup,
 /// };
 ///
@@ -379,7 +379,7 @@ pub mod example_dispatch_tree {}
 ///     let mut program = ThisProgram::new();
 ///     program.with_dispatcher(ErrorCommand);
 ///     program.with_setup(ExitCodeSetup::<ThisProgram>::default());
-///     program.exec();
+///     program.exec_and_exit();
 /// }
 ///
 /// dispatcher!("error", ErrorCommand => ErrorEntry);
@@ -393,7 +393,8 @@ pub mod example_dispatch_tree {}
 ///
 /// #[renderer]
 /// fn render_error(_prev: ResultError) {
-///     r_println!("Error!");
+///     let exit_code = exit_code::<ThisProgram>();
+///     r_println!("Exit with exit code: {}", exit_code);
 /// }
 ///
 /// gen_program!();

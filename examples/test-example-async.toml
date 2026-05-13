@@ -1,0 +1,54 @@
+[[test.example-async]]
+command = "hello World"
+expect.exit-code = 0
+expect.result = "Hello, World!"
+
+[[test.example-basic]]
+command = "hello World"
+expect.exit-code = 0
+expect.result = "Hello, World!"
+
+[[test.example-exit-code]]
+command = "error"
+expect.exit-code = 1
+expect.result = "Exit with exit code: 1"
+
+[[test.example-general-renderer]]
+command = "render Bob 22"
+expect.exit-code = 0
+expect.result = "Bob is 22 years old"
+
+[[test.example-general-renderer]]
+command = "render Bob 22 --json"
+expect.exit-code = 0
+expect.result = "{\"member_name\":\"Bob\",\"member_age\":22}"
+
+[[test.example-general-renderer]]
+command = "render Bob 22 --yaml"
+expect.exit-code = 0
+expect.result = "member_name: Bob\nmember_age: 22"
+
+[[test.example-picker]]
+command = "pick Bob"
+expect.exit-code = 0
+expect.result = "Picked: name = Bob, age = 20"
+
+[[test.example-picker]]
+command = "pick Bob --age -15"
+expect.exit-code = 0
+expect.result = "Picked: name = Bob, age = 0"
+
+[[test.example-picker]]
+command = "pick --age 99"
+expect.exit-code = 0
+expect.result = "No name provided."
+
+[[test.example-picker]]
+command = "pick"
+expect.exit-code = 0
+expect.result = "No name provided."
+
+[[test.example-picker]]
+command = "pick --age 150"
+expect.exit-code = 0
+expect.result = "No name provided."
