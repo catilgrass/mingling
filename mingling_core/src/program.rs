@@ -175,8 +175,7 @@ impl<C> Program<C>
 where
     C: ProgramCollect<Enum = C>,
 {
-    /// Sets the current program instance and runs the provided async function.
-    async fn set_instance_and_run<F, Fut>(self, f: F) -> Fut::Output
+    async fn exec_wrapper<F, Fut>(self, f: F) -> Fut::Output
     where
         C: 'static + Send + Sync,
         F: FnOnce(&'static Program<C>) -> Fut + Send + Sync,
@@ -199,7 +198,7 @@ where
         C: 'static + Send + Sync,
     {
         self.args = self.args.iter().skip(1).cloned().collect();
-        self.set_instance_and_run(|p| async { crate::exec::exec(p).await.map_err(|e| e.into()) })
+        self.exec_wrapper(|p| async { crate::exec::exec(p).await.map_err(|e| e.into()) })
             .await
     }
 
@@ -260,8 +259,7 @@ impl<C> Program<C>
 where
     C: ProgramCollect<Enum = C>,
 {
-    /// Sets the current program instance and runs the provided function.
-    fn set_instance_and_run<F, R>(self, f: F) -> R
+    fn exec_wrapper<F, R>(self, f: F) -> R
     where
         C: 'static + Send + Sync,
         F: FnOnce(&'static Program<C>) -> R + Send + Sync,
@@ -283,7 +281,7 @@ where
         C: 'static + Send + Sync,
     {
         self.args = self.args.iter().skip(1).cloned().collect();
-        self.set_instance_and_run(|p| crate::exec::exec(p).map_err(|e| e.into()))
+        self.exec_wrapper(|p| crate::exec::exec(p).map_err(|e| e.into()))
     }
 
     /// Run the command line program
