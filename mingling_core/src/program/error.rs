@@ -4,9 +4,20 @@ use thiserror::Error;
 
 /// Error type returned when a panic occurs during execution.
 #[derive(Error)]
-#[error("execution panicked: {payload:?}")]
 pub struct ProgramPanic {
     pub payload: Box<dyn Any + Send>,
+}
+
+impl fmt::Display for ProgramPanic {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Some(s) = self.payload.downcast_ref::<&str>() {
+            write!(f, "{}", s)
+        } else if let Some(s) = self.payload.downcast_ref::<String>() {
+            write!(f, "{}", s)
+        } else {
+            write!(f, "")
+        }
+    }
 }
 
 impl ProgramPanic {
