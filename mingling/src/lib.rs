@@ -182,3 +182,40 @@ pub mod setup {
 
 /// Mutable global resources provided within Mingling
 pub mod res;
+
+/// The prelude module provides convenient re-exports of commonly used macros and traits.
+///
+/// Importing this module brings the essential components of Mingling into scope,
+/// reducing boilerplate when defining commands, dispatchers, renderers, and the
+/// program entry point.
+///
+/// # Examples
+///
+/// ```rust
+/// use mingling::prelude::*;
+/// ```
+pub mod prelude {
+    /// Re-export of the `chain` macro for defining a chain of commands.
+    pub use crate::macros::chain;
+    /// Re-export of the `dispatcher` macro for routing commands.
+    pub use crate::macros::dispatcher;
+    /// Re-export of the `gen_program` macro for generating the program entry point.
+    pub use crate::macros::gen_program;
+    /// Re-export of the `pack` macro for creating wrapper types.
+    pub use crate::macros::pack;
+    /// Re-export of the `r_print` macro for printing within a renderer context.
+    pub use crate::macros::r_print;
+    /// Re-export of the `r_println` macro for printing with a newline within a renderer
+    /// context.
+    pub use crate::macros::r_println;
+    /// Re-export of the `renderer` macro for defining renderer functions.
+    pub use crate::macros::renderer;
+
+    /// Re-export of the `completion` macro for generating completion entries.
+    #[cfg(feature = "comp")]
+    pub use crate::macros::completion;
+
+    /// Re-export of the `AsPicker` trait for picker functionality.
+    #[cfg(feature = "parser")]
+    pub use crate::parser::AsPicker;
+}
