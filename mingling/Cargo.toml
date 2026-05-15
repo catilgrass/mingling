@@ -1,18 +1,18 @@
 [package]
 name = "mingling"
-version = "0.1.8"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
 authors = ["Weicao-CatilGrass"]
-license = "MIT OR Apache-2.0"
+license.workspace = true
 readme = "README.md"
 description = "A Rust CLI framework for many subcmds & complex workflows, reduces boilerplate via proc macros, focus on biz logic"
 keywords = ["cli", "framework", "procedural", "subcommand", "command-line"]
 categories = ["command-line-interface"]
-repository = "https://github.com/catilgrass/mingling"
+repository.workspace = true
 
 [dev-dependencies]
-serde = { version = "1", features = ["derive"] }
-tokio = { version = "1", features = ["full"] }
+serde.workspace = true
+tokio.workspace = true
 mingling = { path = ".", features = ["comp", "general_renderer", "parser"] }
 
 [package.metadata.docs.rs]
@@ -40,5 +40,5 @@ parser = ["dep:size"]
 [dependencies]
 mingling_core = { path = "../mingling_core", default-features = false }
 mingling_macros = { path = "../mingling_macros", default-features = false }
-serde = { version = "1.0", features = ["derive"], optional = true }
+serde = { workspace = true, optional = true }
 size = { version = "0.5", optional = true }
