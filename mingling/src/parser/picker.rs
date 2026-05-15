@@ -725,7 +725,7 @@ where
     Self: Into<Vec<String>>,
 {
     /// Converts the value into a `Picker` by first converting it into a `Vec<String>`.
-    fn as_picker(self) -> Picker
+    fn to_picker(self) -> Picker
     where
         Self: Sized,
         Vec<String>: From<Self>,

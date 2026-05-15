@@ -168,11 +168,7 @@ impl Argument {
     /// This method filters out all command-line style flags from the arguments,
     /// returning a new `Argument` instance containing only non-flag arguments.
     pub fn strip_all_flags(mut self) -> Self {
-        self.vec = self
-            .vec
-            .into_iter()
-            .filter(|f| !f.starts_with('-'))
-            .collect();
+        self.vec.retain(|f| !f.starts_with('-'));
         self
     }
 }

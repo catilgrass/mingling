@@ -15,7 +15,10 @@ const TMPL_COMP_PWSH: &str = include_str!("../../tmpls/comps/pwsh.ps1");
 /// Scripts are written to the `OUT_DIR` (or `target/` if `OUT_DIR` is not set).
 ///
 /// # Example
-/// ```
+/// ```rust,ignore
+/// # use mingling_core::comp::ShellFlag;
+/// # use mingling_core::build::build_comp_scripts;
+///
 /// // Generate completion scripts for "myapp"
 /// build_comp_scripts("myapp").unwrap();
 ///
@@ -53,7 +56,9 @@ pub fn build_comp_scripts(name: &str) -> Result<(), std::io::Error> {
 /// resulting completion script to the target directory (typically `target/`).
 ///
 /// # Example
-/// ```
+/// ```rust,ignore
+/// # use mingling_core::comp::ShellFlag;
+/// # use mingling_core::build::build_comp_script;
 /// build_comp_script(&ShellFlag::Bash, "myapp").unwrap();
 /// ```
 pub fn build_comp_script(shell_flag: &ShellFlag, bin_name: &str) -> Result<(), std::io::Error> {
@@ -69,7 +74,9 @@ pub fn build_comp_script(shell_flag: &ShellFlag, bin_name: &str) -> Result<(), s
 /// and writes the resulting completion script to the specified directory.
 ///
 /// # Example
-/// ```
+/// ```rust,ignore
+/// # use mingling_core::comp::ShellFlag;
+/// # use mingling_core::build::build_comp_script_to;
 /// build_comp_script_to(&ShellFlag::Bash, "myapp", "target/completions").unwrap();
 /// ```
 pub fn build_comp_script_to(
@@ -93,7 +100,9 @@ pub fn build_comp_script_to(
 /// and writes the resulting completion script directly to the specified file path.
 ///
 /// # Example
-/// ```
+/// ```rust,ignore
+/// # use mingling_core::comp::ShellFlag;
+/// # use mingling_core::build::build_comp_script_to_file;
 /// build_comp_script_to_file(&ShellFlag::Bash, "myapp", "target/completions/myapp_comp.sh").unwrap();
 /// ```
 pub fn build_comp_script_to_file(

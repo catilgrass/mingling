@@ -106,14 +106,10 @@ impl ShellContext {
     ///
     /// ```
     /// # use mingling_core::ShellContext;
-    /// # use mingling_macros::suggest;
-    /// # use mingling::comp_tools::ShellContextHelper;
-    ///
     /// let ctx = ShellContext::default();
-    /// let helper = ShellContextHelper::from(ctx);
     ///
     /// // Check if either "--insert" or "-i" appears exactly once
-    /// if helper.filling_argument_first(["--insert", "-i"]) {
+    /// if ctx.filling_argument_first(["--insert", "-i"]) {
     ///     // Perform action that should only happen once, example:
     ///     // return suggest! {
     ///     //     "A", "B", "C"
@@ -135,7 +131,7 @@ impl ShellContext {
                 return true;
             }
         }
-        return false;
+        false
     }
 
     /// Checks if the previous word in the command line arguments matches any of the given flags.
@@ -148,14 +144,10 @@ impl ShellContext {
     ///
     /// ```
     /// # use mingling_core::ShellContext;
-    /// # use mingling_macros::suggest;
-    /// # use mingling::comp_tools::ShellContextHelper;
-    ///
     /// let ctx = ShellContext::default();
-    /// let helper = ShellContextHelper::from(ctx);
     ///
     /// // Check if the previous word is either "--file" or "-f"
-    /// if helper.filling_argument(["--file", "-f"]) {
+    /// if ctx.filling_argument(["--file", "-f"]) {
     ///     // The user is likely expecting a file argument next, example:
     ///     // return suggest! {
     ///     //     "src/main.rs", "Cargo.toml", "README.md"
@@ -168,7 +160,7 @@ impl ShellContext {
                 return true;
             }
         }
-        return false;
+        false
     }
 
     /// Checks if the user is currently typing a flag argument.
@@ -188,14 +180,10 @@ impl ShellContext {
     ///
     /// ```
     /// # use mingling_core::ShellContext;
-    /// # use mingling_macros::suggest;
-    /// # use mingling::comp_tools::ShellContextHelper;
-    ///
     /// let ctx = ShellContext::default();
-    /// let helper = ShellContextHelper::from(ctx);
     ///
     /// // Check if the user is typing a flag
-    /// if helper.typing_argument() {
+    /// if ctx.typing_argument() {
     ///     // The user is likely entering a flag, example:
     ///     // return suggest! {
     ///     //     "--help", "--version", "--verbose"
@@ -220,7 +208,7 @@ impl ShellContext {
     /// when the user has already typed certain flags. The method processes both
     /// regular suggestion sets and file completion suggestions differently.
     pub fn strip_typed_argument(&self, suggest: Suggest) -> Suggest {
-        let typed = Self::get_typed_arguments(&self);
+        let typed = Self::get_typed_arguments(self);
         match suggest {
             Suggest::Suggest(mut set) => {
                 set.retain(|item| !typed.contains(item.suggest()));
