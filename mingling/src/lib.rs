@@ -171,6 +171,18 @@ pub mod feature {
 
     /// Whether the `repl` feature is enabled
     pub use crate::features::MINGLING_REPL;
+
+    /// Whether the `json_serde_fmt` feature is enabled
+    pub use crate::features::MINGLING_JSON_SERDE_FMT;
+
+    /// Whether the `ron_serde_fmt` feature is enabled
+    pub use crate::features::MINGLING_RON_SERDE_FMT;
+
+    /// Whether the `toml_serde_fmt` feature is enabled
+    pub use crate::features::MINGLING_TOML_SERDE_FMT;
+
+    /// Whether the `yaml_serde_fmt` feature is enabled
+    pub use crate::features::MINGLING_YAML_SERDE_FMT;
 }
 
 mod setups;

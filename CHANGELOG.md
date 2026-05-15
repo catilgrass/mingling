@@ -6,7 +6,13 @@
 None
 
 #### Optimizings:
-None
+1. **\[core\]** The core library no longer depends on `thiserror`
+
+2. **\[mingling\]** Split the monolithic `general_renderer` feature into separate format-specific features:
+   - `general_renderer` now only includes core serialization support without any specific format
+   - `general_renderer_full` bundles all available serialization formats
+   - Individual format features: `json_serde_fmt`, `yaml_serde_fmt`, `toml_serde_fmt`, `ron_serde_fmt`
+   - A meta feature `all_serde_fmt` enables all format features at once
 
 #### Features:
 

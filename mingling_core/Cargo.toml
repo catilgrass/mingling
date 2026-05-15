@@ -13,13 +13,12 @@ async = []
 builds = ["dep:dirs"]
 
 dispatch_tree = []
-general_renderer = [
-    "dep:serde",
-    "dep:ron",
-    "dep:serde_json",
-    "dep:serde_yaml",
-    "dep:toml",
-]
+general_renderer = ["dep:serde"]
+ron_serde_fmt = ["dep:ron"]
+json_serde_fmt = ["dep:serde_json"]
+yaml_serde_fmt = ["dep:serde_yaml"]
+toml_serde_fmt = ["dep:toml"]
+
 repl = []
 
 clap = []

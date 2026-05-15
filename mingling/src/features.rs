@@ -51,3 +51,27 @@ pub const MINGLING_PARSER: bool = false;
 
 #[cfg(feature = "parser")]
 pub const MINGLING_PARSER: bool = true;
+
+#[cfg(not(feature = "json_serde_fmt"))]
+pub const MINGLING_JSON_SERDE_FMT: bool = false;
+
+#[cfg(feature = "json_serde_fmt")]
+pub const MINGLING_JSON_SERDE_FMT: bool = true;
+
+#[cfg(not(feature = "yaml_serde_fmt"))]
+pub const MINGLING_YAML_SERDE_FMT: bool = false;
+
+#[cfg(feature = "yaml_serde_fmt")]
+pub const MINGLING_YAML_SERDE_FMT: bool = true;
+
+#[cfg(not(feature = "toml_serde_fmt"))]
+pub const MINGLING_TOML_SERDE_FMT: bool = false;
+
+#[cfg(feature = "toml_serde_fmt")]
+pub const MINGLING_TOML_SERDE_FMT: bool = true;
+
+#[cfg(not(feature = "ron_serde_fmt"))]
+pub const MINGLING_RON_SERDE_FMT: bool = false;
+
+#[cfg(feature = "ron_serde_fmt")]
+pub const MINGLING_RON_SERDE_FMT: bool = true;

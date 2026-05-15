@@ -278,6 +278,7 @@ fn render<C: ProgramCollect<Enum = C>>(program: &Program<C>, any: AnyOutput<C>) 
     }
     #[cfg(feature = "general_renderer")]
     {
+        #[allow(unreachable_patterns)]
         match program.general_renderer_name {
             super::GeneralRendererSetting::Disable => {
                 let mut render_result = RenderResult::default();
@@ -303,6 +304,7 @@ fn render_help<C: ProgramCollect<Enum = C>>(
     }
     #[cfg(feature = "general_renderer")]
     {
+        #[allow(unreachable_patterns)]
         match program.general_renderer_name {
             super::GeneralRendererSetting::Disable => {
                 let mut render_result = RenderResult::default();

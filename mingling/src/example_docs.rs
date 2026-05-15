@@ -445,6 +445,8 @@ pub mod example_exit_code {}
 /// mingling = { path = "../../mingling", features = [
 ///     "parser",
 ///     "general_renderer",
+///     "json_serde_fmt",
+///     "yaml_serde_fmt",
 /// ] }
 /// serde = { version = "1", features = ["derive"] }
 /// ```

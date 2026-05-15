@@ -15,6 +15,7 @@ pub struct GeneralRenderer;
 
 impl GeneralRenderer {
     // Renders data in the specified format to the given RenderResult.
+    #[allow(unused_variables)]
     pub fn render<T: Serialize + Send>(
         data: &T,
         setting: &GeneralRendererSetting,
@@ -22,16 +23,23 @@ impl GeneralRenderer {
     ) -> Result<(), GeneralRendererSerializeError> {
         match setting {
             GeneralRendererSetting::Disable => Ok(()),
+            #[cfg(feature = "json_serde_fmt")]
             GeneralRendererSetting::Json => Self::render_to_json(data, r),
+            #[cfg(feature = "json_serde_fmt")]
             GeneralRendererSetting::JsonPretty => Self::render_to_json_pretty(data, r),
+            #[cfg(feature = "yaml_serde_fmt")]
             GeneralRendererSetting::Yaml => Self::render_to_yaml(data, r),
+            #[cfg(feature = "toml_serde_fmt")]
             GeneralRendererSetting::Toml => Self::render_to_toml(data, r),
+            #[cfg(feature = "ron_serde_fmt")]
             GeneralRendererSetting::Ron => Self::render_to_ron(data, r),
+            #[cfg(feature = "ron_serde_fmt")]
             GeneralRendererSetting::RonPretty => Self::render_to_ron_pretty(data, r),
         }
     }
 
     /// Serializes data to JSON format and writes it to the render result.
+    #[cfg(feature = "json_serde_fmt")]
     pub fn render_to_json<T: Serialize + Send>(
         data: &T,
         r: &mut RenderResult,
@@ -43,6 +51,7 @@ impl GeneralRenderer {
     }
 
     /// Serializes data to pretty-printed JSON format and writes it to the render result.
+    #[cfg(feature = "json_serde_fmt")]
     pub fn render_to_json_pretty<T: Serialize + Send>(
         data: &T,
         r: &mut RenderResult,
@@ -54,6 +63,7 @@ impl GeneralRenderer {
     }
 
     /// Serializes data to RON format and writes it to the render result.
+    #[cfg(feature = "ron_serde_fmt")]
     pub fn render_to_ron<T: Serialize + Send>(
         data: &T,
         r: &mut RenderResult,
@@ -65,6 +75,7 @@ impl GeneralRenderer {
     }
 
     /// Serializes data to pretty-printed RON format and writes it to the render result.
+    #[cfg(feature = "ron_serde_fmt")]
     pub fn render_to_ron_pretty<T: Serialize + Send>(
         data: &T,
         r: &mut RenderResult,
@@ -80,6 +91,7 @@ impl GeneralRenderer {
     }
 
     /// Serializes data to TOML format and writes it to the render result.
+    #[cfg(feature = "toml_serde_fmt")]
     pub fn render_to_toml<T: Serialize + Send>(
         data: &T,
         r: &mut RenderResult,
@@ -91,6 +103,7 @@ impl GeneralRenderer {
     }
 
     /// Serializes data to YAML format and writes it to the render result.
+    #[cfg(feature = "yaml_serde_fmt")]
     pub fn render_to_yaml<T: Serialize + Send>(
         data: &T,
         r: &mut RenderResult,

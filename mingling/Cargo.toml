@@ -28,14 +28,41 @@ default = ["mingling_core/default", "mingling_macros/default"]
 
 clap = ["mingling_core/clap", "mingling_macros/clap"]
 dispatch_tree = ["mingling_core/dispatch_tree", "mingling_macros/dispatch_tree"]
+repl = ["mingling_core/repl", "mingling_macros/repl"]
+comp = ["mingling_core/comp", "mingling_macros/comp"]
+parser = ["dep:size"]
+
 general_renderer = [
     "mingling_core/general_renderer",
     "dep:serde",
     "mingling_macros/general_renderer",
+    "json_serde_fmt",
 ]
-repl = ["mingling_core/repl", "mingling_macros/repl"]
-comp = ["mingling_core/comp", "mingling_macros/comp"]
-parser = ["dep:size"]
+
+general_renderer_empty = [
+    "mingling_core/general_renderer",
+    "dep:serde",
+    "mingling_macros/general_renderer",
+]
+
+general_renderer_full = [
+    "mingling_core/general_renderer",
+    "dep:serde",
+    "mingling_macros/general_renderer",
+    "all_serde_fmt",
+]
+
+all_serde_fmt = [
+    "json_serde_fmt",
+    "yaml_serde_fmt",
+    "toml_serde_fmt",
+    "ron_serde_fmt",
+]
+
+json_serde_fmt = ["mingling_core/json_serde_fmt"]
+yaml_serde_fmt = ["mingling_core/yaml_serde_fmt"]
+toml_serde_fmt = ["mingling_core/toml_serde_fmt"]
+ron_serde_fmt = ["mingling_core/ron_serde_fmt"]
 
 [dependencies]
 mingling_core = { path = "../mingling_core", default-features = false }
