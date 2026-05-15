@@ -78,6 +78,8 @@ this::<ThisProgram>().modify_res::<ExitCode>(|code| {
 });
 ```
 
+11. **\[core\]** Added panic catch for program execution. 
+
 #### **BREAKING CHANGES**:
 
 1. **\[core\]** The signature of `exec` has been changed to `exec(self) -> i32` (previously was `exec(self)`)

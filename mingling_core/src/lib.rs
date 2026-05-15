@@ -12,7 +12,6 @@ mod any;
 mod asset;
 mod program;
 mod renderer;
-
 mod tester;
 
 /// Provides a toolkit for `Mingling` testing capabilities.
@@ -38,6 +37,7 @@ pub use crate::asset::renderer::*;
 pub mod error {
     pub use crate::asset::chain::error::*;
     pub use crate::exec::error::*;
+    pub use crate::program::error::*;
     #[cfg(feature = "general_renderer")]
     pub use crate::renderer::general::error::*;
 }

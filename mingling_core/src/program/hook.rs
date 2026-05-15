@@ -1,6 +1,6 @@
 use std::any::Any;
 
-use crate::{AnyOutput, Program, ProgramCollect, RenderResult};
+use crate::{AnyOutput, Program, ProgramCollect, RenderResult, error::ProgramPanic};
 
 #[derive(Default)]
 pub struct ProgramHook<C>
@@ -30,6 +30,9 @@ where
 
     /// Executes before the program ends
     pub finish: Option<fn() -> i32>,
+
+    /// Executes when the program panics
+    pub exec_panic: Option<fn(&ProgramPanic)>,
 }
 
 impl<C> Program<C>
@@ -126,6 +129,18 @@ where
         }
     }
 
+    pub(crate) fn run_hook_exec_panic(&self, panic_info: &ProgramPanic) {
+        if !self.user_context.run_hook {
+            return;
+        }
+
+        for hook in &self.hooks {
+            if let Some(exec_panic) = hook.exec_panic {
+                exec_panic(panic_info)
+            }
+        }
+    }
+
     pub(crate) fn run_hook_finish(&self) -> i32 {
         if !self.user_context.run_hook {
             return 0;
@@ -159,6 +174,7 @@ where
             pre_render: None,
             post_render: None,
             finish: None,
+            exec_panic: None,
         }
     }
 
@@ -207,6 +223,12 @@ where
     /// Sets the handler for the `finish` event.
     pub fn on_finish(mut self, handler: fn() -> i32) -> Self {
         let _ = self.finish.insert(handler);
+        self
+    }
+
+    /// Sets the handler for the `exec_panic` event.
+    pub fn on_exec_panic(mut self, handler: fn(&ProgramPanic)) -> Self {
+        let _ = self.exec_panic.insert(handler);
         self
     }
 }

@@ -1,4 +1,4 @@
-use crate::error::ChainProcessError;
+use crate::error::{ChainProcessError, ProgramPanic};
 
 #[derive(thiserror::Error, Debug)]
 pub enum ProgramExecuteError {
@@ -7,6 +7,9 @@ pub enum ProgramExecuteError {
 
     #[error("No Renderer (`{0}`) Found")]
     RendererNotFound(String),
+
+    #[error("Panic: {0:?}")]
+    Panic(#[from] ProgramPanic),
 
     #[error("Other error: {0}")]
     Other(String),

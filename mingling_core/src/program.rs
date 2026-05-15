@@ -1,3 +1,5 @@
+use crate::error::ProgramPanic;
+
 #[cfg(feature = "comp")]
 use crate::{ShellContext, Suggest};
 
@@ -21,6 +23,8 @@ use std::{
 #[cfg(feature = "async")]
 use std::pin::Pin;
 
+#[doc(hidden)]
+pub mod error;
 #[doc(hidden)]
 pub mod exec;
 #[doc(hidden)]
@@ -175,7 +179,7 @@ impl<C> Program<C>
 where
     C: ProgramCollect<Enum = C>,
 {
-    async fn exec_wrapper<F, Fut>(self, f: F) -> Fut::Output
+    async fn exec_wrapper<F, Fut>(self, f: F) -> Result<Fut::Output, ProgramPanic>
     where
         C: 'static + Send + Sync,
         F: FnOnce(&'static Program<C>) -> Fut + Send + Sync,
@@ -189,7 +193,16 @@ where
             .unwrap()
             .downcast_ref::<Program<C>>()
             .unwrap();
-        f(program).await
+        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(program))) {
+            Ok(fut) => Ok(fut.await),
+            Err(panic_info) => {
+                let panic_payload = ProgramPanic {
+                    payload: panic_info,
+                };
+                program.run_hook_exec_panic(&panic_payload);
+                Err(panic_payload)
+            }
+        }
     }
 
     /// Run the command line program
@@ -198,8 +211,13 @@ where
         C: 'static + Send + Sync,
     {
         self.args = self.args.iter().skip(1).cloned().collect();
-        self.exec_wrapper(|p| async { crate::exec::exec(p).await.map_err(|e| e.into()) })
+        match self
+            .exec_wrapper(|p| async { crate::exec::exec(p).await.map_err(|e| e.into()) })
             .await
+        {
+            Ok(r) => r,
+            Err(e) => Err(ProgramExecuteError::Panic(e)),
+        }
     }
 
     /// Run the command line program
@@ -221,6 +239,10 @@ where
                 }
                 ProgramExecuteError::Other(e) => {
                     eprintln!("{}", e);
+                    return 1;
+                }
+                ProgramExecuteError::Panic(unwinded_error) => {
+                    eprintln!("{}", unwinded_error);
                     return 1;
                 }
             },
@@ -259,7 +281,7 @@ impl<C> Program<C>
 where
     C: ProgramCollect<Enum = C>,
 {
-    fn exec_wrapper<F, R>(self, f: F) -> R
+    fn exec_wrapper<F, R>(self, f: F) -> Result<R, ProgramPanic>
     where
         C: 'static + Send + Sync,
         F: FnOnce(&'static Program<C>) -> R + Send + Sync,
@@ -272,7 +294,16 @@ where
             .unwrap()
             .downcast_ref::<Program<C>>()
             .unwrap();
-        f(program)
+        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(program))) {
+            Ok(result) => Ok(result),
+            Err(panic_info) => {
+                let panic_payload = ProgramPanic {
+                    payload: panic_info,
+                };
+                program.run_hook_exec_panic(&panic_payload);
+                Err(panic_payload)
+            }
+        }
     }
 
     /// Run the command line program
@@ -281,7 +312,10 @@ where
         C: 'static + Send + Sync,
     {
         self.args = self.args.iter().skip(1).cloned().collect();
-        self.exec_wrapper(|p| crate::exec::exec(p).map_err(|e| e.into()))
+        match self.exec_wrapper(|p| crate::exec::exec(p).map_err(|e| e.into())) {
+            Ok(r) => r,
+            Err(e) => Err(ProgramExecuteError::Panic(e)),
+        }
     }
 
     /// Run the command line program
@@ -303,6 +337,10 @@ where
                 }
                 ProgramExecuteError::Other(e) => {
                     eprintln!("{}", e);
+                    return 1;
+                }
+                ProgramExecuteError::Panic(unwinded_error) => {
+                    eprintln!("{}", unwinded_error);
                     return 1;
                 }
             },
