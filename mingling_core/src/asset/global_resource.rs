@@ -4,7 +4,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use crate::{ChainProcess, Program, ProgramCollect};
+use crate::{ChainProcess, Program, ProgramCollect, this};
 
 pub(crate) type GlobalResources = Arc<Mutex<HashMap<TypeId, Box<dyn Any + Sync + Send>>>>;
 
@@ -109,14 +109,24 @@ impl<ResType: 'static + Send + Sync> AsRef<ResType> for GlobalResource<ResType> 
 pub trait ResourceMarker {
     fn res_clone(&self) -> Self;
     fn res_default() -> Self;
+    fn modify<C>(f: impl FnOnce(&mut Self))
+    where
+        C: ProgramCollect<Enum = C> + 'static;
 }
 
-impl<T: Default + Clone> ResourceMarker for T {
+impl<T: Default + Clone + Send + Sync + 'static> ResourceMarker for T {
     fn res_clone(&self) -> Self {
         Clone::clone(self)
     }
 
     fn res_default() -> Self {
         Default::default()
+    }
+
+    fn modify<C>(f: impl FnOnce(&mut Self))
+    where
+        C: ProgramCollect<Enum = C> + 'static,
+    {
+        this::<C>().modify_res(f);
     }
 }

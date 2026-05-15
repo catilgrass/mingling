@@ -64,6 +64,20 @@ fn your_chain(_prev: Prev) -> NextProcess {
 
 9. **\[core\]** `RenderResult` now carries new data `exit_code`
 
+10. **\[core\]** Added `modify` function to `ResourceMarker` for modifying a program's global resources
+
+```rust
+// Example
+ExitCode::modify::<ThisProgram>(|code| {
+    code.exit_code = 1;
+});
+
+// Equivalent to:
+this::<ThisProgram>().modify_res::<ExitCode>(|code| {
+    code.exit_code = 1;
+});
+```
+
 #### **BREAKING CHANGES**:
 
 1. **\[core\]** The signature of `exec` has been changed to `exec(self) -> i32` (previously was `exec(self)`)
