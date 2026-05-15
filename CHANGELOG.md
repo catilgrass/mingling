@@ -79,6 +79,7 @@ this::<ThisProgram>().modify_res::<ExitCode>(|code| {
 ```
 
 11. **\[core\]** Added panic catch for program execution. 
+12. **\[core\]** Added the `stdout_setting.silence_panic` option, which is disabled by default. When enabled, `Program`'s `panic!` will not output to the console
 
 #### **BREAKING CHANGES**:
 

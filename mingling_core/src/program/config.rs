@@ -7,6 +7,9 @@ pub struct ProgramStdoutSetting {
     /// Render results and output
     pub render_output: bool,
 
+    /// Silence panic messages
+    pub silence_panic: bool,
+
     #[cfg(feature = "clap")]
     /// Behavior when Clap Dispatcher outputs help information
     pub clap_help_print_behaviour: ClapHelpPrintBehaviour,
@@ -28,6 +31,7 @@ impl Default for ProgramStdoutSetting {
         ProgramStdoutSetting {
             error_output: true,
             render_output: true,
+            silence_panic: false,
             #[cfg(feature = "clap")]
             clap_help_print_behaviour: ClapHelpPrintBehaviour::default(),
         }

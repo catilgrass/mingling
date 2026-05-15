@@ -193,6 +193,16 @@ where
             .unwrap()
             .downcast_ref::<Program<C>>()
             .unwrap();
+
+        #[cfg(not(panic = "abort"))]
+        if program.stdout_setting.silence_panic {
+            std::panic::set_hook(Box::new(|_| {}));
+        }
+
+        #[cfg(panic = "abort")]
+        return Ok(f(program));
+
+        #[cfg(not(panic = "abort"))]
         match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(program))) {
             Ok(fut) => Ok(fut.await),
             Err(panic_info) => {
@@ -294,6 +304,16 @@ where
             .unwrap()
             .downcast_ref::<Program<C>>()
             .unwrap();
+
+        #[cfg(not(panic = "abort"))]
+        if program.stdout_setting.silence_panic {
+            std::panic::set_hook(Box::new(|_| {}));
+        }
+
+        #[cfg(panic = "abort")]
+        return Ok(f(program));
+
+        #[cfg(not(panic = "abort"))]
         match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(program))) {
             Ok(result) => Ok(result),
             Err(panic_info) => {
