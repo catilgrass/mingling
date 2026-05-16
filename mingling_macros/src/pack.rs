@@ -3,6 +3,8 @@ use quote::quote;
 use syn::parse::{Parse, ParseStream};
 use syn::{Ident, Result as SynResult, Token, Type};
 
+use crate::DEFAULT_PROGRAM_NAME;
+
 enum PackInput {
     Explicit {
         group_name: Ident,
@@ -50,6 +52,8 @@ impl Parse for PackInput {
 }
 
 pub fn pack(input: TokenStream) -> TokenStream {
+    let default_program_ident = crate::default_program_ident();
+
     // Parse the input
     let pack_input = syn::parse_macro_input!(input as PackInput);
 
@@ -64,7 +68,7 @@ pub fn pack(input: TokenStream) -> TokenStream {
             type_name,
             inner_type,
         } => (
-            Ident::new("ThisProgram", proc_macro2::Span::call_site()),
+            Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site()),
             type_name,
             inner_type,
             true,
@@ -207,13 +211,13 @@ pub fn pack(input: TokenStream) -> TokenStream {
             #default_impl
             #register_impl
 
-            impl Into<mingling::AnyOutput<ThisProgram>> for #type_name {
-                fn into(self) -> mingling::AnyOutput<ThisProgram> {
+            impl Into<mingling::AnyOutput<#default_program_ident>> for #type_name {
+                fn into(self) -> mingling::AnyOutput<#default_program_ident> {
                     mingling::AnyOutput::new(self)
                 }
             }
 
-            impl From<#type_name> for mingling::ChainProcess<ThisProgram> {
+            impl From<#type_name> for mingling::ChainProcess<#default_program_ident> {
                 fn from(value: #type_name) -> Self {
                     mingling::AnyOutput::new(value).route_chain()
                 }
@@ -221,19 +225,19 @@ pub fn pack(input: TokenStream) -> TokenStream {
 
             impl #type_name {
                 /// Converts the wrapper type into a `ChainProcess` for chaining operations.
-                pub fn to_chain(self) -> mingling::ChainProcess<ThisProgram> {
+                pub fn to_chain(self) -> mingling::ChainProcess<#default_program_ident> {
                     mingling::AnyOutput::new(self).route_chain()
                 }
 
                 /// Converts the wrapper type into a `ChainProcess` for rendering operations.
-                pub fn to_render(self) -> mingling::ChainProcess<ThisProgram> {
+                pub fn to_render(self) -> mingling::ChainProcess<#default_program_ident> {
                     mingling::AnyOutput::new(self).route_renderer()
                 }
             }
 
-            impl ::mingling::Groupped<ThisProgram> for #type_name {
-                fn member_id() -> ThisProgram {
-                    ThisProgram::#type_name
+            impl ::mingling::Groupped<#default_program_ident> for #type_name {
+                fn member_id() -> #default_program_ident {
+                    #default_program_ident::#type_name
                 }
             }
         }

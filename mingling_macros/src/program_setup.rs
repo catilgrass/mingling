@@ -3,6 +3,8 @@ use quote::quote;
 use syn::spanned::Spanned;
 use syn::{FnArg, Ident, ItemFn, Pat, PatType, ReturnType, Signature, Type, parse_macro_input};
 
+use crate::DEFAULT_PROGRAM_NAME;
+
 /// Extracts the program parameter from function arguments
 fn extract_program_param(sig: &Signature) -> syn::Result<(Pat, Type)> {
     // The function should have exactly one parameter
@@ -48,11 +50,13 @@ fn extract_return_type(sig: &Signature) -> syn::Result<()> {
 }
 
 pub fn setup_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
+    let default_program_ident = crate::default_program_ident();
+
     // Parse the attribute arguments (e.g., MyProgram from #[program_setup(MyProgram)])
     // If no argument is provided, use ThisProgram
     let (program_name, use_crate_prefix) = if attr.is_empty() {
         (
-            Ident::new("ThisProgram", proc_macro2::Span::call_site()),
+            Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site()),
             true,
         )
     } else {
@@ -106,8 +110,8 @@ pub fn setup_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
             #[doc(hidden)]
             #vis struct #struct_name;
 
-            impl ::mingling::setup::ProgramSetup<ThisProgram> for #struct_name {
-                fn setup(&mut self, program: &mut ::mingling::Program<ThisProgram>) {
+            impl ::mingling::setup::ProgramSetup<#default_program_ident> for #struct_name {
+                fn setup(&mut self, program: &mut ::mingling::Program<#default_program_ident>) {
                     // Call the original function with the actual Program type
                     #fn_name(program);
                 }

@@ -3,6 +3,8 @@ use proc_macro2::Span;
 use quote::quote;
 use syn::{Attribute, DeriveInput, Ident, parse_macro_input};
 
+use crate::DEFAULT_PROGRAM_NAME;
+
 /// Parses the `#[group(...)]` attribute to extract the group type
 fn parse_group_attribute(attrs: &[Attribute]) -> Option<Ident> {
     for attr in attrs {
@@ -24,7 +26,7 @@ pub fn derive_groupped(input: TokenStream) -> TokenStream {
 
     // Parse attributes to find #[group(...)]
     let group_ident = parse_group_attribute(&input.attrs)
-        .unwrap_or_else(|| Ident::new("ThisProgram", Span::call_site()));
+        .unwrap_or_else(|| Ident::new(DEFAULT_PROGRAM_NAME, Span::call_site()));
 
     let any_output_convert_impls = proc_macro2::TokenStream::from(build_any_output_convert_impls(
         struct_name.clone(),
@@ -55,7 +57,7 @@ pub fn derive_groupped_serialize(input: TokenStream) -> TokenStream {
 
     // Parse attributes to find #[group(...)]
     let group_ident = parse_group_attribute(&input_parsed.attrs)
-        .unwrap_or_else(|| Ident::new("ThisProgram", Span::call_site()));
+        .unwrap_or_else(|| Ident::new(DEFAULT_PROGRAM_NAME, Span::call_site()));
 
     let any_output_convert_impls = proc_macro2::TokenStream::from(build_any_output_convert_impls(
         struct_name.clone(),

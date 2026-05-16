@@ -44,6 +44,12 @@ mod renderer;
 #[cfg(feature = "comp")]
 mod suggest;
 
+pub(crate) const DEFAULT_PROGRAM_NAME: &str = "ThisProgram";
+
+pub(crate) fn default_program_ident() -> Ident {
+    Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site())
+}
+
 // Global variables
 #[cfg(feature = "general_renderer")]
 pub(crate) static GENERAL_RENDERERS: Lazy<Mutex<BTreeSet<String>>> =
@@ -1549,7 +1555,7 @@ pub fn suggest_enum(input: TokenStream) -> TokenStream {
 
 fn read_name(input: &TokenStream) -> Ident {
     if input.is_empty() {
-        Ident::new("ThisProgram", proc_macro2::Span::call_site())
+        Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site())
     } else {
         syn::parse(input.clone()).unwrap()
     }

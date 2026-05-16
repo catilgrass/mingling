@@ -144,7 +144,7 @@ pub fn dispatcher_clap_attr(attr: TokenStream, item: TokenStream) -> TokenStream
                 error_struct: options.error_struct.clone(),
                 help_enabled: options.help_enabled,
             },
-            Ident::new("ThisProgram", proc_macro2::Span::call_site()),
+            Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site()),
         ),
         DispatcherClapInput::Explicit {
             group_name,

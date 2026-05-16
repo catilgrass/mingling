@@ -11,6 +11,7 @@ use syn::{Ident, Result as SynResult, Token};
 
 #[cfg(feature = "dispatch_tree")]
 use crate::COMPILE_TIME_DISPATCHERS;
+use crate::DEFAULT_PROGRAM_NAME;
 
 enum DispatcherChainInput {
     Explicit {
@@ -88,7 +89,7 @@ pub fn dispatcher(input: TokenStream) -> TokenStream {
             command_struct,
             pack,
         } => (
-            Ident::new("ThisProgram", proc_macro2::Span::call_site()),
+            Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site()),
             command_name,
             command_struct,
             pack,
@@ -104,7 +105,7 @@ pub fn dispatcher(input: TokenStream) -> TokenStream {
 
     let expanded = {
         let program_ident = if use_default {
-            Ident::new("ThisProgram", proc_macro2::Span::call_site())
+            Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site())
         } else {
             group_name.clone()
         };
