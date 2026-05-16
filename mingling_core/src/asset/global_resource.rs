@@ -43,6 +43,40 @@ where
         }
     }
 
+    /// Internal syntax for the `&mut MyResource` syntax of #[chain], do not use directly
+    #[doc(hidden)]
+    pub fn __modify_res_and_return_any<Res, Return>(
+        &self,
+        f: impl FnOnce(&mut Res) -> Return,
+    ) -> impl Into<ChainProcess<C>>
+    where
+        Res: 'static + Default + ResourceMarker + Send + Sync,
+        Return: Into<ChainProcess<C>>,
+    {
+        let mut guard = match self.resources.lock() {
+            Ok(guard) => guard,
+            Err(_) => {
+                let mut default_res = Res::res_default();
+                return f(&mut default_res);
+            }
+        };
+        if let Some(arc_res) = guard
+            .get_mut(&TypeId::of::<Res>())
+            .and_then(|a| a.downcast_mut::<Arc<Res>>())
+        {
+            let mut new_res = match Arc::try_unwrap(std::mem::take(arc_res)) {
+                Ok(val) => val,
+                Err(arc) => (*arc).res_clone(),
+            };
+            let r = f(&mut new_res);
+            *arc_res = Arc::new(new_res);
+            r
+        } else {
+            let mut default_res = Res::res_default();
+            f(&mut default_res)
+        }
+    }
+
     /// Get an resources by type, returning `Res` if present
     pub fn res<Res: 'static + Send + Sync>(&self) -> Option<GlobalResource<Res>> {
         let guard = self.resources.lock().ok()?;

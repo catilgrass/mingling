@@ -40,9 +40,33 @@ fn proc(prev: HelloEntry) -> ChainProcess<ThisProgram> {
 }
 ```
 
-3. **\[mingling\]** Added the `dispatch_tree` feature. When enabled, it will automatically generate a prefix tree, improving the command lookup efficiency from O(n) to O(len)
+3. **\[macros\]** The `#[chain]` macro now supports mutable resource injection via the `&mut` syntax. When you write:
 
-4. **\[mingling\]** Added `mingling::feature` module for runtime feature detection. You can now check which features are enabled at compile time:
+```rust
+#[chain]
+pub fn handle_some_entry(_prev: SomeEntry, exit: &mut ExitCode) -> NextProcess {
+    exit.exit_code = 2;
+    Empty::default()
+}
+```
+
+Will expand:
+
+```rust
+fn proc(_prev: OkEntry) -> ChainProcess<ThisProgram> {
+    ::mingling::this::<ThisProgram>()
+        .__modify_res_and_return_any(|exit: &mut ExitCode| {
+            exit.exit_code = 2;
+            Empty::default()
+        })
+}
+```
+
+This allows directly mutating global resources within chain functions without manually calling `modify_res`. Multiple `&mut` parameters are supported with proper nesting.
+
+4. **\[mingling\]** Added the `dispatch_tree` feature. When enabled, it will automatically generate a prefix tree, improving the command lookup efficiency from O(n) to O(len)
+
+5. **\[mingling\]** Added `mingling::feature` module for runtime feature detection. You can now check which features are enabled at compile time:
 
 ```rust
 // Example: Check if a feature is enabled
@@ -51,10 +75,10 @@ if mingling::feature::MINGLING_ASYNC {
 }
 ```
 
-5. **\[core\]** Added `with_hook` functions to embed callback events into the program lifecycle
-6. **\[core\]** Added `user_context.run_hook` configuration item to control whether the program runs hooks
-7. **\[core\]** Added `exec_and_exit`, which will return an `i32` exit code after the program ends
-8. **\[core\]** Added `ExitCodeSetup`, you can control the program's exit code by modifying the `mingling::res::ExitCode` resource
+6. **\[core\]** Added `with_hook` functions to embed callback events into the program lifecycle
+7. **\[core\]** Added `user_context.run_hook` configuration item to control whether the program runs hooks
+8. **\[core\]** Added `exec_and_exit`, which will return an `i32` exit code after the program ends
+9. **\[core\]** Added `ExitCodeSetup`, you can control the program's exit code by modifying the `mingling::res::ExitCode` resource
 
 ```rust
 #[chain]
@@ -68,9 +92,9 @@ fn your_chain(_prev: Prev) -> NextProcess {
 }
 ```
 
-9. **\[core\]** `RenderResult` now carries new data `exit_code`
+10. **\[core\]** `RenderResult` now carries new data `exit_code`
 
-10. **\[core\]** Added `modify` function to `ResourceMarker` for modifying a program's global resources
+11. **\[core\]** Added `modify` function to `ResourceMarker` for modifying a program's global resources
 
 ```rust
 // Example
@@ -84,8 +108,8 @@ this::<ThisProgram>().modify_res::<ExitCode>(|code| {
 });
 ```
 
-11. **\[core\]** Added panic catch for program execution. 
-12. **\[core\]** Added the `stdout_setting.silence_panic` option, which is disabled by default. When enabled, `Program`'s `panic!` will not output to the console
+12. **\[core\]** Added panic catch for program execution. 
+13. **\[core\]** Added the `stdout_setting.silence_panic` option, which is disabled by default. When enabled, `Program`'s `panic!` will not output to the console
 
 #### **BREAKING CHANGES**:
 
