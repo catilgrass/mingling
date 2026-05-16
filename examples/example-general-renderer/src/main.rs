@@ -32,12 +32,8 @@
 //! member_age: 22
 //! ```
 
-use mingling::{
-    Groupped,
-    macros::{chain, dispatcher, gen_program, r_println, renderer},
-    parser::Picker,
-    setup::GeneralRendererSetup,
-};
+use mingling::prelude::*;
+use mingling::{Groupped, parser::Picker, setup::GeneralRendererSetup};
 use serde::Serialize;
 
 dispatcher!("render", RenderCommand => RenderCommandEntry);

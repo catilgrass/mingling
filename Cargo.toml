@@ -9,6 +9,7 @@ exclude = [
     "examples/example-exit-code",
     "examples/example-general-renderer",
     "examples/example-picker",
+    "examples/example-resources",
     "dev_tools",
 ]
 

@@ -17,10 +17,7 @@
 //! cargo run --manifest-path ./examples/example-picker/Cargo.toml -- pick --age 99
 //! ```
 
-use mingling::{
-    macros::{chain, dispatcher, gen_program, pack, r_println, renderer},
-    parser::Picker,
-};
+use mingling::prelude::*;
 
 dispatcher!("pick", PickCommand => PickEntry);
 
@@ -35,9 +32,7 @@ pack!(ParsedPickInput = (i32, String));
 
 #[chain]
 fn parse(prev: PickEntry) -> NextProcess {
-    // Extract arguments from `PickEntry`'s inner and create a `Picker`
-    let picker = Picker::new(prev.inner);
-    let picked = picker
+    let picked = prev
         // First extract the named argument
         .pick_or("--age", 20)
         .after(|n: i32| n.clamp(0, 100))

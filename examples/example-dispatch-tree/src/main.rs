@@ -18,7 +18,7 @@
 
 #![allow(unused_mut)]
 
-use mingling::macros::{dispatcher, gen_program};
+use mingling::prelude::*;
 
 fn main() {
     let mut program = ThisProgram::new();

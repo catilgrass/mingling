@@ -5,7 +5,7 @@
 //! cargo run --manifest-path ./examples/example-basic/Cargo.toml -- hello World
 //! ```
 
-use mingling::macros::{chain, dispatcher, gen_program, pack, r_println, renderer};
+use mingling::prelude::*;
 
 // Define dispatcher `HelloCommand`, directing subcommand "hello" to `HelloEntry`
 dispatcher!("hello", HelloCommand => HelloEntry);

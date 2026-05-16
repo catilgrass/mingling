@@ -11,8 +11,8 @@
 //! cargo run --manifest-path ./examples/example-exit-code/Cargo.toml -- error
 //! ```
 
+use mingling::prelude::*;
 use mingling::{
-    macros::{chain, dispatcher, gen_program, pack, r_println, renderer},
     res::{exit_code, update_exit_code},
     setup::ExitCodeSetup,
 };

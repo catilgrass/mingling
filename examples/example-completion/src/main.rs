@@ -34,11 +34,10 @@
 //! 4. Write `main.rs`, adding completion logic for your command entry point
 //! 5. Execute `cargo install --path ./`, then run the corresponding completion script in your shell
 
+use mingling::prelude::*;
 use mingling::{
     EnumTag, Groupped, ShellContext, Suggest,
-    macros::{
-        chain, completion, dispatcher, gen_program, r_println, renderer, suggest, suggest_enum,
-    },
+    macros::{suggest, suggest_enum},
     parser::{PickableEnum, Picker},
 };
 

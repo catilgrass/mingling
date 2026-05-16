@@ -16,7 +16,7 @@
 //! cargo run --manifest-path ./examples/example-async/Cargo.toml -- hello World
 //! ```
 
-use mingling::macros::{chain, dispatcher, gen_program, pack, r_println, renderer};
+use mingling::prelude::*;
 
 dispatcher!("hello", HelloCommand => HelloEntry);
 

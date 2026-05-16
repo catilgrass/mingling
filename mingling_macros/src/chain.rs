@@ -213,6 +213,19 @@ pub fn chain_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
         quote! { #group_name }
     };
 
+    // Check for async fn + &mut combination, which is not supported
+    #[cfg(feature = "async")]
+    if is_async_fn {
+        if let Some(mut_res) = resources.iter().find(|r| r.is_mut) {
+            return syn::Error::new(
+                mut_res.var_name.span(),
+                "Cannot use `&mut` resource injection in async chain function. ",
+            )
+            .to_compile_error()
+            .into();
+        }
+    }
+
     // Separate resources into immutable refs and mutable refs
     let immut_resources: Vec<_> = resources.iter().filter(|r| !r.is_mut).collect();
     let mut_resources: Vec<_> = resources.iter().filter(|r| r.is_mut).collect();
@@ -243,9 +256,9 @@ pub fn chain_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
         })
         .collect();
 
-    // Build nested __modify_res_and_return_any wrappers for mutable references
-    // The innermost layer is the original function body, wrapping outward for each mutable resource.
-    // The function returns a value, so the return values need to be properly chained.
+    // Build nested __modify_res_and_return_any wrappers for mutable references.
+    // The innermost layer is the original function body, wrapping outward for each
+    // mutable resource.
     let body_stmts = &fn_body.stmts;
     let mut wrapped_body = quote! {
         #(#body_stmts)*
@@ -253,7 +266,6 @@ pub fn chain_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
 
     // Wrap from inside to outside: the first mutable parameter becomes the outermost wrapper,
     // and the last mutable parameter becomes the innermost wrapper.
-    // Therefore iterate mut_resources and wrap outward.
     for res in mut_resources.iter() {
         let var_name = &res.var_name;
         let inner_type = &res.inner_type;
