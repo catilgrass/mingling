@@ -69,6 +69,11 @@ pub fn help_attr(item: TokenStream) -> TokenStream {
         Err(e) => return e.to_compile_error().into(),
     };
 
+    // Check that the entry type is a single-segment type (no `::`)
+    if let Some(err_tokens) = crate::check_single_segment_type(&entry_type, "#[help]") {
+        return err_tokens.into();
+    }
+
     // Validate return type
     if let Err(e) = validate_return_type(&input_fn.sig) {
         return e.to_compile_error().into();

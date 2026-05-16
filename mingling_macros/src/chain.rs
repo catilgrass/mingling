@@ -29,7 +29,19 @@ fn extract_args_info(sig: &Signature) -> syn::Result<(Pat, TypePath, Vec<Resourc
         FnArg::Typed(PatType { pat, ty, .. }) => {
             let param_pat = (**pat).clone();
             match &**ty {
-                Type::Path(type_path) => (param_pat, type_path.clone()),
+                Type::Path(type_path) => {
+                    // Check that the type is a single-segment type (no `::`)
+                    if type_path.path.segments.len() > 1 {
+                        return Err(syn::Error::new(
+                            type_path.span(),
+                            format!(
+                                "The type `{}` in #[chain] function must be a simple single-segment type, e.g. `Empty` instead of `other::Empty`. Qualified paths with `::` are not allowed here.",
+                                quote! { #type_path }
+                            ),
+                        ));
+                    }
+                    (param_pat, type_path.clone())
+                }
                 Type::Reference(_) => {
                     return Err(syn::Error::new(
                         ty.span(),

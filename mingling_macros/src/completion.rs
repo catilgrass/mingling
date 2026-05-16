@@ -1,6 +1,7 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{Ident, ItemFn, parse_macro_input};
+use syn::spanned::Spanned;
+use syn::{FnArg, Ident, ItemFn, PatType, Type, parse_macro_input};
 
 #[cfg(feature = "comp")]
 pub fn completion_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
@@ -43,6 +44,23 @@ pub fn completion_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
         )
         .to_compile_error()
         .into();
+    }
+
+    // Check that the function parameter type is a single-segment type path (no `::`)
+    if let Some(arg) = inputs.first()
+        && let FnArg::Typed(PatType { ty, .. }) = arg
+        && let Type::Path(type_path) = &**ty
+        && type_path.path.segments.len() > 1
+    {
+        return syn::Error::new(
+                        type_path.span(),
+                        format!(
+                            "The type `{}` in #[completion] function must be a simple single-segment type, e.g. `HelloEntry` instead of `other::HelloEntry`. Qualified paths with `::` are not allowed here.",
+                            quote! { #type_path }
+                        ),
+                    )
+                    .to_compile_error()
+                    .into();
     }
 
     // Get the function body

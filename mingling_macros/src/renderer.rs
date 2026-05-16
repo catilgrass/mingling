@@ -76,6 +76,11 @@ pub fn renderer_attr(item: TokenStream) -> TokenStream {
         Err(e) => return e.to_compile_error().into(),
     };
 
+    // Check that the previous type is a single-segment type (no `::`)
+    if let Some(err_tokens) = crate::check_single_segment_type(&previous_type, "#[renderer]") {
+        return err_tokens.into();
+    }
+
     // Validate return type
     if let Err(e) = extract_return_type(&input_fn.sig) {
         return e.to_compile_error().into();
