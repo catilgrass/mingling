@@ -32,7 +32,7 @@
 ///
 /// main.rs
 /// ```ignore
-/// use mingling::macros::{chain, dispatcher, gen_program, pack, r_println, renderer};
+/// use mingling::prelude::*;
 ///
 /// dispatcher!("hello", HelloCommand => HelloEntry);
 ///
@@ -86,7 +86,7 @@ pub mod example_async {}
 ///
 /// main.rs
 /// ```ignore
-/// use mingling::macros::{chain, dispatcher, gen_program, pack, r_println, renderer};
+/// use mingling::prelude::*;
 ///
 /// // Define dispatcher `HelloCommand`, directing subcommand "hello" to `HelloEntry`
 /// dispatcher!("hello", HelloCommand => HelloEntry);
@@ -177,11 +177,10 @@ pub mod example_basic {}
 ///
 /// main.rs
 /// ```ignore
+/// use mingling::prelude::*;
 /// use mingling::{
 ///     EnumTag, Groupped, ShellContext, Suggest,
-///     macros::{
-///         chain, completion, dispatcher, gen_program, r_println, renderer, suggest, suggest_enum,
-///     },
+///     macros::{suggest, suggest_enum},
 ///     parser::{PickableEnum, Picker},
 /// };
 ///
@@ -313,7 +312,7 @@ pub mod example_completion {}
 /// ```ignore
 /// #![allow(unused_mut)]
 ///
-/// use mingling::macros::{dispatcher, gen_program};
+/// use mingling::prelude::*;
 ///
 /// fn main() {
 ///     let mut program = ThisProgram::new();
@@ -369,8 +368,8 @@ pub mod example_dispatch_tree {}
 ///
 /// main.rs
 /// ```ignore
+/// use mingling::prelude::*;
 /// use mingling::{
-///     macros::{chain, dispatcher, gen_program, pack, r_println, renderer},
 ///     res::{exit_code, update_exit_code},
 ///     setup::ExitCodeSetup,
 /// };
@@ -453,12 +452,8 @@ pub mod example_exit_code {}
 ///
 /// main.rs
 /// ```ignore
-/// use mingling::{
-///     Groupped,
-///     macros::{chain, dispatcher, gen_program, r_println, renderer},
-///     parser::Picker,
-///     setup::GeneralRendererSetup,
-/// };
+/// use mingling::prelude::*;
+/// use mingling::{Groupped, parser::Picker, setup::GeneralRendererSetup};
 /// use serde::Serialize;
 ///
 /// dispatcher!("render", RenderCommand => RenderCommandEntry);
@@ -531,10 +526,7 @@ pub mod example_general_renderer {}
 ///
 /// main.rs
 /// ```ignore
-/// use mingling::{
-///     macros::{chain, dispatcher, gen_program, pack, r_println, renderer},
-///     parser::Picker,
-/// };
+/// use mingling::prelude::*;
 ///
 /// dispatcher!("pick", PickCommand => PickEntry);
 ///
@@ -549,9 +541,7 @@ pub mod example_general_renderer {}
 ///
 /// #[chain]
 /// fn parse(prev: PickEntry) -> NextProcess {
-///     // Extract arguments from `PickEntry`'s inner and create a `Picker`
-///     let picker = Picker::new(prev.inner);
-///     let picked = picker
+///     let picked = prev
 ///         // First extract the named argument
 ///         .pick_or("--age", 20)
 ///         .after(|n: i32| n.clamp(0, 100))
@@ -579,3 +569,75 @@ pub mod example_general_renderer {}
 /// gen_program!();
 /// ```
 pub mod example_picker {}
+/// `Mingling` Example - Global Resource Injection
+///
+///  This example demonstrates how to use global resource injection in `#[chain]` functions.
+///  You can inject both immutable (`&T`) and mutable (`&mut T`) references to global resources.
+///
+///  # How to Run
+///  ```bash
+///  cargo run --manifest-path ./examples/example-resources/Cargo.toml -- setup
+///  ```
+///
+/// Cargo.toml
+/// ```ignore
+/// [package]
+/// name = "example-resources"
+/// version = "0.0.1"
+/// edition = "2024"
+///
+/// [dependencies]
+/// mingling = { path = "../../mingling", features = ["parser"] }
+/// ```
+///
+/// main.rs
+/// ```ignore
+/// use mingling::prelude::*;
+/// use std::{env::current_dir, path::PathBuf};
+///
+/// // Define a resource for storing global state
+/// #[derive(Default, Clone)]
+/// pub struct MyResource {
+///     current_dir: PathBuf,
+/// }
+///
+/// fn main() {
+///     let mut program = ThisProgram::new();
+///
+///     // Add the resource to the program
+///     program.with_resource(MyResource::default());
+///
+///     program.with_dispatcher(SetupCommand);
+///     program.exec_and_exit();
+/// }
+///
+/// dispatcher!("setup", SetupCommand => SetupEntry);
+/// pack!(StateRead = ());
+/// pack!(ResultCurrentDir = PathBuf);
+///
+/// #[chain]
+/// fn setup(
+///     _prev: SetupEntry,
+///     resource: &mut MyResource, // Import the resource into `setup`
+/// ) -> NextProcess {
+///     // Set the global resource
+///     resource.current_dir = current_dir().unwrap();
+///
+///     StateRead::default()
+/// }
+///
+/// #[chain]
+/// fn read(_prev: StateRead, resource: &MyResource) -> NextProcess {
+///     // Read the global resource
+///     let current_dir = resource.current_dir.clone();
+///     ResultCurrentDir::new(current_dir).to_render()
+/// }
+///
+/// #[renderer]
+/// fn render_current_dir(dir: ResultCurrentDir) {
+///     r_println!("Current dir: {}", dir.to_string_lossy())
+/// }
+///
+/// gen_program!();
+/// ```
+pub mod example_resources {}
