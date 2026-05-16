@@ -430,7 +430,7 @@ Initial release of the Mingling framework.
 #### Features:
 
 1. **\[core\]** Basic chain processing pipeline with `#[chain]` and `#[renderer]` macros
-2. **\[macros\]** `gen_program!` for program generation, `pack!` for wrapper types, `dispatcher!` for command routing
+2. **\[macros\]** `program!` for program generation, `chain_struct!` for wrapper types, `dispatcher!` for command routing
 3. **\[core\]** `Program` struct with dispatcher registration and execution
 4. **\[core\]** `RenderResult` for terminal output buffering
 5. **\[docs\]** README and license files
