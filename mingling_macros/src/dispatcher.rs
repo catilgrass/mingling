@@ -109,6 +109,11 @@ pub fn dispatcher(input: TokenStream) -> TokenStream {
         } else {
             group_name.clone()
         };
+        let program_path = if use_default {
+            crate::default_program_path()
+        } else {
+            quote! { #group_name }
+        };
 
         quote! {
             #[derive(Debug, Default)]
@@ -119,14 +124,14 @@ pub fn dispatcher(input: TokenStream) -> TokenStream {
             #comp_entry
             #dispatch_tree_entry
 
-            impl ::mingling::Dispatcher<#program_ident> for #command_struct {
+            impl ::mingling::Dispatcher<#program_path> for #command_struct {
                 fn node(&self) -> ::mingling::Node {
                     ::mingling::macros::node!(#command_name_str)
                 }
-                fn begin(&self, args: Vec<String>) -> ::mingling::ChainProcess<#program_ident> {
+                fn begin(&self, args: Vec<String>) -> ::mingling::ChainProcess<#program_path> {
                     #pack::new(args).to_chain()
                 }
-                fn clone_dispatcher(&self) -> Box<dyn ::mingling::Dispatcher<#program_ident>> {
+                fn clone_dispatcher(&self) -> Box<dyn ::mingling::Dispatcher<#program_path>> {
                     Box::new(#command_struct)
                 }
             }

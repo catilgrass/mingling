@@ -46,8 +46,13 @@ mod suggest;
 
 pub(crate) const DEFAULT_PROGRAM_NAME: &str = "ThisProgram";
 
+#[allow(dead_code)]
 pub(crate) fn default_program_ident() -> Ident {
     Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site())
+}
+
+pub(crate) fn default_program_path() -> proc_macro2::TokenStream {
+    quote::quote! { crate::ThisProgram }
 }
 
 // Global variables

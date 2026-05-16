@@ -52,7 +52,7 @@ impl Parse for PackInput {
 }
 
 pub fn pack(input: TokenStream) -> TokenStream {
-    let default_program_ident = crate::default_program_ident();
+    let default_program_path = crate::default_program_path();
 
     // Parse the input
     let pack_input = syn::parse_macro_input!(input as PackInput);
@@ -211,13 +211,13 @@ pub fn pack(input: TokenStream) -> TokenStream {
             #default_impl
             #register_impl
 
-            impl Into<mingling::AnyOutput<#default_program_ident>> for #type_name {
-                fn into(self) -> mingling::AnyOutput<#default_program_ident> {
+            impl Into<mingling::AnyOutput<#default_program_path>> for #type_name {
+                fn into(self) -> mingling::AnyOutput<#default_program_path> {
                     mingling::AnyOutput::new(self)
                 }
             }
 
-            impl From<#type_name> for mingling::ChainProcess<#default_program_ident> {
+            impl From<#type_name> for mingling::ChainProcess<#default_program_path> {
                 fn from(value: #type_name) -> Self {
                     mingling::AnyOutput::new(value).route_chain()
                 }
@@ -225,19 +225,19 @@ pub fn pack(input: TokenStream) -> TokenStream {
 
             impl #type_name {
                 /// Converts the wrapper type into a `ChainProcess` for chaining operations.
-                pub fn to_chain(self) -> mingling::ChainProcess<#default_program_ident> {
+                pub fn to_chain(self) -> mingling::ChainProcess<#default_program_path> {
                     mingling::AnyOutput::new(self).route_chain()
                 }
 
                 /// Converts the wrapper type into a `ChainProcess` for rendering operations.
-                pub fn to_render(self) -> mingling::ChainProcess<#default_program_ident> {
+                pub fn to_render(self) -> mingling::ChainProcess<#default_program_path> {
                     mingling::AnyOutput::new(self).route_renderer()
                 }
             }
 
-            impl ::mingling::Groupped<#default_program_ident> for #type_name {
-                fn member_id() -> #default_program_ident {
-                    #default_program_ident::#type_name
+            impl ::mingling::Groupped<#default_program_path> for #type_name {
+                fn member_id() -> #default_program_path {
+                    #default_program_path::#type_name
                 }
             }
         }

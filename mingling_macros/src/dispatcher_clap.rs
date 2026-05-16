@@ -132,40 +132,49 @@ pub fn dispatcher_clap_attr(attr: TokenStream, item: TokenStream) -> TokenStream
     let struct_name = &input_struct.ident;
 
     // Determine the program name and other fields
-    let (command_name_str, dispatcher_struct, options, program_ident) = match &attr_input {
-        DispatcherClapInput::Default {
-            command_name,
-            dispatcher_struct,
-            options,
-        } => (
-            command_name.value(),
-            dispatcher_struct.clone(),
-            ClapOptions {
-                error_struct: options.error_struct.clone(),
-                help_enabled: options.help_enabled,
-            },
-            Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site()),
-        ),
-        DispatcherClapInput::Explicit {
-            group_name,
-            command_name,
-            dispatcher_struct,
-            options,
-        } => (
-            command_name.value(),
-            dispatcher_struct.clone(),
-            ClapOptions {
-                error_struct: options.error_struct.clone(),
-                help_enabled: options.help_enabled,
-            },
-            group_name.clone(),
-        ),
-    };
+    let (command_name_str, dispatcher_struct, options, program_ident, program_path) =
+        match &attr_input {
+            DispatcherClapInput::Default {
+                command_name,
+                dispatcher_struct,
+                options,
+            } => {
+                let path = crate::default_program_path();
+                (
+                    command_name.value(),
+                    dispatcher_struct.clone(),
+                    ClapOptions {
+                        error_struct: options.error_struct.clone(),
+                        help_enabled: options.help_enabled,
+                    },
+                    Ident::new(DEFAULT_PROGRAM_NAME, proc_macro2::Span::call_site()),
+                    path,
+                )
+            }
+            DispatcherClapInput::Explicit {
+                group_name,
+                command_name,
+                dispatcher_struct,
+                options,
+            } => {
+                let path = quote! { #group_name };
+                (
+                    command_name.value(),
+                    dispatcher_struct.clone(),
+                    ClapOptions {
+                        error_struct: options.error_struct.clone(),
+                        help_enabled: options.help_enabled,
+                    },
+                    group_name.clone(),
+                    path,
+                )
+            }
+        };
 
     // Generate the `begin` method body
     let begin_body = if let Some(ref error_struct) = options.error_struct {
         quote! {
-            if ::mingling::this::<#program_ident>().user_context.help {
+            if ::mingling::this::<#program_path>().user_context.help {
                 return #struct_name::default().to_chain();
             }
             match <#struct_name as ::clap::Parser>::try_parse_from(clap_args) {
@@ -177,7 +186,7 @@ pub fn dispatcher_clap_attr(attr: TokenStream, item: TokenStream) -> TokenStream
         }
     } else {
         quote! {
-            if ::mingling::this::<#program_ident>().user_context.help {
+            if ::mingling::this::<#program_path>().user_context.help {
                 return #struct_name::default().to_chain();
             }
             let parsed = <#struct_name as ::clap::Parser>::try_parse_from(clap_args)
@@ -205,7 +214,7 @@ pub fn dispatcher_clap_attr(attr: TokenStream, item: TokenStream) -> TokenStream
             fn #help_fn_name(_prev: #struct_name) {
                 use clap::ColorChoice;
 
-                let this = ::mingling::this::<#program_ident>();
+                let this = ::mingling::this::<#program_path>();
                 match this.stdout_setting.clap_help_print_behaviour {
                     ::mingling::ClapHelpPrintBehaviour::WriteToRenderResult => {
                         <#struct_name as ::clap::CommandFactory>::command()
@@ -238,7 +247,7 @@ pub fn dispatcher_clap_attr(attr: TokenStream, item: TokenStream) -> TokenStream
         #[doc(hidden)]
         struct #dispatcher_struct;
 
-        impl ::mingling::Dispatcher<#program_ident> for #dispatcher_struct {
+        impl ::mingling::Dispatcher<#program_path> for #dispatcher_struct {
             fn node(&self) -> ::mingling::Node {
                 ::mingling::macros::node!(#command_name_str)
             }
@@ -246,7 +255,7 @@ pub fn dispatcher_clap_attr(attr: TokenStream, item: TokenStream) -> TokenStream
             fn begin(
                 &self,
                 args: Vec<String>,
-            ) -> ::mingling::ChainProcess<#program_ident> {
+            ) -> ::mingling::ChainProcess<#program_path> {
                 // Prepend a dummy program name for clap's parse_from
                 let clap_args = std::iter::once(String::new())
                     .chain(args)
@@ -257,7 +266,7 @@ pub fn dispatcher_clap_attr(attr: TokenStream, item: TokenStream) -> TokenStream
 
             fn clone_dispatcher(
                 &self,
-            ) -> Box<dyn ::mingling::Dispatcher<#program_ident>> {
+            ) -> Box<dyn ::mingling::Dispatcher<#program_path>> {
                 Box::new(#dispatcher_struct)
             }
         }

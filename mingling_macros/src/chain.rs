@@ -134,8 +134,6 @@ fn extract_args_info(sig: &Signature) -> syn::Result<(Pat, TypePath, Vec<Resourc
 }
 
 pub fn chain_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
-    let default_program_ident = crate::default_program_ident();
-
     // Parse the attribute arguments (e.g., MyProgram from #[chain(MyProgram)])
     // If no argument is provided, use ThisProgram
     let (group_name, use_crate_prefix) = if attr.is_empty() {
@@ -235,7 +233,7 @@ pub fn chain_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
 
     // Determine the program type for the return type
     let program_type = if use_crate_prefix {
-        quote! { #default_program_ident }
+        crate::default_program_path()
     } else {
         quote! { #group_name }
     };
@@ -390,7 +388,7 @@ pub fn chain_attr(attr: TokenStream, item: TokenStream) -> TokenStream {
 
             ::mingling::macros::register_chain!(#previous_type, #struct_name);
 
-            impl ::mingling::Chain<#default_program_ident> for #struct_name {
+            impl ::mingling::Chain<#program_type> for #struct_name {
                 type Previous = #previous_type;
 
                 #proc_fn
