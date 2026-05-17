@@ -118,6 +118,7 @@ pub enum ChainProcess<G> {
 /// - `Chain`: Continue execution to the next chain
 /// - `Renderer`: Send output to renderer and end execution
 #[derive(Debug, PartialEq, Eq)]
+#[repr(u8)]
 pub enum NextProcess {
     Chain,
     Renderer,

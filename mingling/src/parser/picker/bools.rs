@@ -1,6 +1,7 @@
 use crate::parser::Pickable;
 
 #[derive(Debug, Default)]
+#[repr(u8)]
 pub enum Yes {
     Yes,
     #[default]
@@ -55,6 +56,7 @@ impl Pickable for Yes {
 }
 
 #[derive(Debug, Default)]
+#[repr(u8)]
 pub enum True {
     True,
     #[default]
