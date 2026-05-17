@@ -35,7 +35,7 @@ pack!(ResultCurrentDir = PathBuf);
 fn setup(
     _prev: SetupEntry,
     resource: &mut MyResource, // Import the resource into `setup`
-) -> NextProcess {
+) -> Next {
     // Set the global resource
     resource.current_dir = current_dir().unwrap();
 
@@ -43,7 +43,7 @@ fn setup(
 }
 
 #[chain]
-fn read(_prev: StateRead, resource: &MyResource) -> NextProcess {
+fn read(_prev: StateRead, resource: &MyResource) -> Next {
     // Read the global resource
     let current_dir = resource.current_dir.clone();
     ResultCurrentDir::new(current_dir).to_render()

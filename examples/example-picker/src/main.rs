@@ -31,7 +31,7 @@ pack!(NoNameProvided = ());
 pack!(ParsedPickInput = (i32, String));
 
 #[chain]
-fn parse(prev: PickEntry) -> NextProcess {
+fn parse(prev: PickEntry) -> Next {
     let picked = prev
         // First extract the named argument
         .pick_or("--age", 20)

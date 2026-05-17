@@ -163,7 +163,7 @@ dispatcher!("greet", GreetCommand => GreetEntry);
 pack!(ResultGreetSomeone = String);
  
 #[chain]
-fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
+fn handle_greet_entry(prev: GreetEntry) -> Next {
     let args = prev.inner;
     let name = args
     	.first()
@@ -185,15 +185,15 @@ fn render_greet_someone(prev: ResultGreetSomeone) {
 
   这样我们就在原本的 `Dispatcher` 和 `Renderer` 中间插入了一个 `Chain`：它可以将用户输入的参数提取出来（或回退到默认值 "World"），再交由渲染器打印到终端。
 
-##### 关于 `NextProcess` 💡
+##### 关于 `Next` 💡
 
-  `NextProcess` 是由 `gen_program!()` 生成的占位符，在 `#[chain]` 展开后，它将被替换为调度器能识别的类型擦除类型 `ChainProcess<ThisProgram>`，用于减少代码量
+  `Next` 是由 `gen_program!()` 生成的占位符，在 `#[chain]` 展开后，它将被替换为调度器能识别的类型擦除类型 `ChainProcess<ThisProgram>`，用于减少代码量
 
 > [!NOTE]
 >
-> `NextProcess` 方案为临时替代，下一次更新需要等待 Rust 的 `Impl In Type Aliases` 特性稳定后。
+> `Next` 方案为临时替代，下一次更新需要等待 Rust 的 `Impl In Type Aliases` 特性稳定后。
 >
-> **不过，您不用担心**：下一次 `NextProcess` 的更新不会引入 **破坏性变更！**
+> **不过，您不用担心**：下一次 `Next` 的更新不会引入 **破坏性变更！**
 
 ##### 关于 `pack!` 💡
 
@@ -227,7 +227,7 @@ dispatcher!("greet", GreetCommand => GreetEntry);
 pack!(ResultGreetSomeone = String);
  
 #[chain]
-fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
+fn handle_greet_entry(prev: GreetEntry) -> Next {
     let args = prev.inner;
     let name = args.first().cloned().unwrap_or_else(|| "World".to_string());
  

@@ -153,23 +153,22 @@ fn parse_chain_attr_args(attr: TokenStream) -> (proc_macro2::TokenStream, bool) 
     }
 }
 
-/// Validates that the return type of the function is `NextProcess`.
+/// Validates that the return type of the function is `Next`.
 fn validate_return_type_is_next_process(sig: &Signature) -> Result<(), proc_macro2::TokenStream> {
     match &sig.output {
         ReturnType::Type(_, ty) => match &**ty {
             Type::Path(type_path) => {
                 let last_segment = type_path.path.segments.last().unwrap();
-                if last_segment.ident != "NextProcess" {
-                    return Err(syn::Error::new(
-                        ty.span(),
-                        "Chain function must return `NextProcess`",
-                    )
-                    .to_compile_error());
+                if last_segment.ident != "Next" {
+                    return Err(
+                        syn::Error::new(ty.span(), "Chain function must return `Next`")
+                            .to_compile_error(),
+                    );
                 }
             }
             _ => {
                 return Err(
-                    syn::Error::new(ty.span(), "Chain function must return `NextProcess`")
+                    syn::Error::new(ty.span(), "Chain function must return `Next`")
                         .to_compile_error(),
                 );
             }
@@ -177,7 +176,7 @@ fn validate_return_type_is_next_process(sig: &Signature) -> Result<(), proc_macr
         ReturnType::Default => {
             return Err(syn::Error::new(
                 sig.span(),
-                "Chain function must specify a return type (must be `NextProcess`)",
+                "Chain function must specify a return type (must be `Next`)",
             )
             .to_compile_error());
         }

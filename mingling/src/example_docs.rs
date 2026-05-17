@@ -51,8 +51,8 @@
 /// // You can freely use async / non-async functions to declare your Chain
 ///
 /// #[chain]
-/// // fn parse_name(prev: HelloEntry) -> NextProcess {
-/// async fn parse_name(prev: HelloEntry) -> NextProcess {
+/// // fn parse_name(prev: HelloEntry) -> Next {
+/// async fn parse_name(prev: HelloEntry) -> Next {
 ///     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
 ///     Hello::new(name).to_render()
 /// }
@@ -107,7 +107,7 @@ pub mod example_async {}
 ///
 /// // Register chain to `ThisProgram`, handling logic from `HelloEntry`
 /// #[chain]
-/// fn parse_name(prev: HelloEntry) -> NextProcess {
+/// fn parse_name(prev: HelloEntry) -> Next {
 ///     // Extract string from `HelloEntry` as argument
 ///     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
 ///
@@ -179,9 +179,9 @@ pub mod example_basic {}
 /// ```ignore
 /// use mingling::prelude::*;
 /// use mingling::{
-///     EnumTag, Groupped, ShellContext, Suggest,
 ///     macros::{suggest, suggest_enum},
 ///     parser::{PickableEnum, Picker},
+///     EnumTag, Groupped, ShellContext, Suggest,
 /// };
 ///
 /// // Define dispatcher `FruitCommand`, directing subcommand "fruit" to `FruitEntry`
@@ -248,7 +248,7 @@ pub mod example_basic {}
 /// impl PickableEnum for FruitType {}
 ///
 /// #[chain]
-/// fn parse_fruit_info(prev: FruitEntry) -> NextProcess {
+/// fn parse_fruit_info(prev: FruitEntry) -> Next {
 ///     let picker = Picker::from(prev.inner);
 ///     let (fruit_name, fruit_type) = picker.pick("--name").pick("--type").unpack();
 ///     let info = FruitInfo {
@@ -385,7 +385,7 @@ pub mod example_dispatch_tree {}
 /// pack!(ResultError = ());
 ///
 /// #[chain]
-/// fn handle_error_entry(_prev: ErrorEntry) -> NextProcess {
+/// fn handle_error_entry(_prev: ErrorEntry) -> Next {
 ///     update_exit_code::<ThisProgram>(1);
 ///     return ResultError::default();
 /// }
@@ -453,7 +453,7 @@ pub mod example_exit_code {}
 /// main.rs
 /// ```ignore
 /// use mingling::prelude::*;
-/// use mingling::{Groupped, parser::Picker, setup::GeneralRendererSetup};
+/// use mingling::{parser::Picker, setup::GeneralRendererSetup, Groupped};
 /// use serde::Serialize;
 ///
 /// dispatcher!("render", RenderCommand => RenderCommandEntry);
@@ -476,7 +476,7 @@ pub mod example_exit_code {}
 /// }
 ///
 /// #[chain]
-/// fn parse_render(prev: RenderCommandEntry) -> NextProcess {
+/// fn parse_render(prev: RenderCommandEntry) -> Next {
 ///     let (name, age) = Picker::new(prev.inner)
 ///         .pick::<String>(())
 ///         .pick::<i32>(())
@@ -540,7 +540,7 @@ pub mod example_general_renderer {}
 /// pack!(ParsedPickInput = (i32, String));
 ///
 /// #[chain]
-/// fn parse(prev: PickEntry) -> NextProcess {
+/// fn parse(prev: PickEntry) -> Next {
 ///     let picked = prev
 ///         // First extract the named argument
 ///         .pick_or("--age", 20)
@@ -619,7 +619,7 @@ pub mod example_picker {}
 /// fn setup(
 ///     _prev: SetupEntry,
 ///     resource: &mut MyResource, // Import the resource into `setup`
-/// ) -> NextProcess {
+/// ) -> Next {
 ///     // Set the global resource
 ///     resource.current_dir = current_dir().unwrap();
 ///
@@ -627,7 +627,7 @@ pub mod example_picker {}
 /// }
 ///
 /// #[chain]
-/// fn read(_prev: StateRead, resource: &MyResource) -> NextProcess {
+/// fn read(_prev: StateRead, resource: &MyResource) -> Next {
 ///     // Read the global resource
 ///     let current_dir = resource.current_dir.clone();
 ///     ResultCurrentDir::new(current_dir).to_render()

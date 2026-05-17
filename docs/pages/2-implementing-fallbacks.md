@@ -97,7 +97,7 @@ fn main() {
 pack!(ResultGreetSomeone = String);
  
 #[chain]
-fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
+fn handle_greet_entry(prev: GreetEntry) -> Next {
     let args = prev.inner;
     let name = args.first().cloned().unwrap_or_else(|| "World".to_string());
  

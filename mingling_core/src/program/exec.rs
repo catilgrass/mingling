@@ -1,7 +1,7 @@
 #![allow(clippy::borrowed_box)]
 
 use crate::{
-    AnyOutput, ChainProcess, Dispatcher, Next, Program, ProgramCollect, RenderResult,
+    AnyOutput, ChainProcess, Dispatcher, NextProcess, Program, ProgramCollect, RenderResult,
     error::ProgramInternalExecuteError,
 };
 
@@ -50,7 +50,7 @@ where
                 program.run_hook_pre_chain(&current.member_id, current.inner.as_ref());
 
                 match C::do_chain(current).await {
-                    ChainProcess::Ok((any, Next::Renderer)) => {
+                    ChainProcess::Ok((any, NextProcess::Renderer)) => {
                         let mut render_result = render::<C>(program, any);
 
                         // Run hook
@@ -58,7 +58,7 @@ where
 
                         return Ok(render_result);
                     }
-                    ChainProcess::Ok((any, Next::Chain)) => {
+                    ChainProcess::Ok((any, NextProcess::Chain)) => {
                         // Run hook
                         program.run_hook_post_chain(&any);
                         any
@@ -142,7 +142,7 @@ where
                 program.run_hook_pre_chain(&current.member_id, current.inner.as_ref());
 
                 match C::do_chain(current) {
-                    ChainProcess::Ok((any, Next::Renderer)) => {
+                    ChainProcess::Ok((any, NextProcess::Renderer)) => {
                         {
                             let mut render_result = render::<C>(program, any);
 
@@ -152,7 +152,7 @@ where
                             return Ok(render_result);
                         };
                     }
-                    ChainProcess::Ok((any, Next::Chain)) => {
+                    ChainProcess::Ok((any, NextProcess::Chain)) => {
                         // Run hook
                         program.run_hook_post_chain(&any);
                         any

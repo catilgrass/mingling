@@ -79,7 +79,7 @@ pub(crate) fn comp_remove_namespace(ctx: &ShellContext) -> Suggest {
 }
 
 #[chain]
-pub(crate) fn handle_set_trust(p: SetTrustNamespaceEntry) -> NextProcess {
+pub(crate) fn handle_set_trust(p: SetTrustNamespaceEntry) -> Next {
     let (trusted, namespace) = route!(
         Picker::new(p.inner)
             .pick::<Yes>(["-t", "--trusted"])
@@ -91,7 +91,7 @@ pub(crate) fn handle_set_trust(p: SetTrustNamespaceEntry) -> NextProcess {
 }
 
 #[chain]
-pub(crate) fn handle_trust(p: TrustNamespaceEntry) -> NextProcess {
+pub(crate) fn handle_trust(p: TrustNamespaceEntry) -> Next {
     SetTrustNamespaceEntry::new({
         let mut args = p.inner.clone();
         args.extend(vec!["-t".to_string(), "yes".to_string()]);
@@ -100,7 +100,7 @@ pub(crate) fn handle_trust(p: TrustNamespaceEntry) -> NextProcess {
 }
 
 #[chain]
-pub(crate) fn handle_untrust(p: UntrustNamespaceEntry) -> NextProcess {
+pub(crate) fn handle_untrust(p: UntrustNamespaceEntry) -> Next {
     SetTrustNamespaceEntry::new({
         let mut args = p.inner.clone();
         args.extend(vec!["-t".to_string(), "no".to_string()]);
@@ -109,7 +109,7 @@ pub(crate) fn handle_untrust(p: UntrustNamespaceEntry) -> NextProcess {
 }
 
 #[chain]
-pub(crate) fn handle_remove_namespace(p: RemoveNamespaceEntry) -> NextProcess {
+pub(crate) fn handle_remove_namespace(p: RemoveNamespaceEntry) -> Next {
     let namespace = route!(
         Picker::new(p.inner)
             .pick_or_route((), ErrorNamespaceNotProvided::default().to_render())

@@ -22,7 +22,7 @@ pub(crate) fn comp_install(ctx: &ShellContext) -> Suggest {
 }
 
 #[chain]
-pub(crate) fn handle_install_entry(prev: InstallEntry) -> NextProcess {
+pub(crate) fn handle_install_entry(prev: InstallEntry) -> Next {
     let is_clean_before_build = Picker::new(prev.inner)
         .pick::<bool>(["--clean", "-c"])
         .unpack();

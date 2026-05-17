@@ -22,7 +22,7 @@ pub(crate) struct ResultBinaries {
 }
 
 #[chain]
-pub(crate) fn handle_target_dir_entry(_prev: ReadTargetDirEntry) -> NextProcess {
+pub(crate) fn handle_target_dir_entry(_prev: ReadTargetDirEntry) -> Next {
     match solve_current_dir() {
         Ok(solved) => {
             let dir = solved.target_dir;
@@ -33,7 +33,7 @@ pub(crate) fn handle_target_dir_entry(_prev: ReadTargetDirEntry) -> NextProcess 
 }
 
 #[chain]
-pub(crate) fn handle_workspace_root_entry(_prev: ReadWorkspaceRootEntry) -> NextProcess {
+pub(crate) fn handle_workspace_root_entry(_prev: ReadWorkspaceRootEntry) -> Next {
     match solve_current_dir() {
         Ok(solved) => {
             let dir = solved.workspace_root;
@@ -44,7 +44,7 @@ pub(crate) fn handle_workspace_root_entry(_prev: ReadWorkspaceRootEntry) -> Next
 }
 
 #[chain]
-pub(crate) fn handle_binaries_entry(_prev: ReadBinariesEntry) -> NextProcess {
+pub(crate) fn handle_binaries_entry(_prev: ReadBinariesEntry) -> Next {
     match solve_current_dir() {
         Ok(solved) => {
             let binaries = solved.binaries;

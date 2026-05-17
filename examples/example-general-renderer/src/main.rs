@@ -33,7 +33,7 @@
 //! ```
 
 use mingling::prelude::*;
-use mingling::{Groupped, parser::Picker, setup::GeneralRendererSetup};
+use mingling::{parser::Picker, setup::GeneralRendererSetup, Groupped};
 use serde::Serialize;
 
 dispatcher!("render", RenderCommand => RenderCommandEntry);
@@ -56,7 +56,7 @@ struct Info {
 }
 
 #[chain]
-fn parse_render(prev: RenderCommandEntry) -> NextProcess {
+fn parse_render(prev: RenderCommandEntry) -> Next {
     let (name, age) = Picker::new(prev.inner)
         .pick::<String>(())
         .pick::<i32>(())

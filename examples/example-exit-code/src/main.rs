@@ -28,7 +28,7 @@ dispatcher!("error", ErrorCommand => ErrorEntry);
 pack!(ResultError = ());
 
 #[chain]
-fn handle_error_entry(_prev: ErrorEntry) -> NextProcess {
+fn handle_error_entry(_prev: ErrorEntry) -> Next {
     update_exit_code::<ThisProgram>(1);
     return ResultError::default();
 }

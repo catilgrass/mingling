@@ -26,7 +26,7 @@ pack!(Hello = String);
 
 // Register chain to `ThisProgram`, handling logic from `HelloEntry`
 #[chain]
-fn parse_name(prev: HelloEntry) -> NextProcess {
+fn parse_name(prev: HelloEntry) -> Next {
     // Extract string from `HelloEntry` as argument
     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
 

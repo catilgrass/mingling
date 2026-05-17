@@ -36,9 +36,9 @@
 
 use mingling::prelude::*;
 use mingling::{
-    EnumTag, Groupped, ShellContext, Suggest,
     macros::{suggest, suggest_enum},
     parser::{PickableEnum, Picker},
+    EnumTag, Groupped, ShellContext, Suggest,
 };
 
 // Define dispatcher `FruitCommand`, directing subcommand "fruit" to `FruitEntry`
@@ -105,7 +105,7 @@ enum FruitType {
 impl PickableEnum for FruitType {}
 
 #[chain]
-fn parse_fruit_info(prev: FruitEntry) -> NextProcess {
+fn parse_fruit_info(prev: FruitEntry) -> Next {
     let picker = Picker::from(prev.inner);
     let (fruit_name, fruit_type) = picker.pick("--name").pick("--type").unpack();
     let info = FruitInfo {

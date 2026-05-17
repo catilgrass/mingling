@@ -66,12 +66,12 @@ impl<G> AnyOutput<G> {
 
     /// Route the output to the next Chain
     pub fn route_chain(self) -> ChainProcess<G> {
-        ChainProcess::Ok((self, Next::Chain))
+        ChainProcess::Ok((self, NextProcess::Chain))
     }
 
     /// Route the output to the Renderer, ending execution
     pub fn route_renderer(self) -> ChainProcess<G> {
-        ChainProcess::Ok((self, Next::Renderer))
+        ChainProcess::Ok((self, NextProcess::Renderer))
     }
 
     #[cfg(feature = "general_renderer")]
@@ -105,11 +105,11 @@ impl<G> std::ops::DerefMut for AnyOutput<G> {
 /// Chain exec result type
 ///
 /// Stores `Ok` and `Err` types of execution results, used to notify the scheduler what to execute next
-/// - Returns `Ok((`[`AnyOutput`](./struct.AnyOutput.html)`, `[`Next::Chain`](./enum.Next.html)`))` to continue execution with this type next
-/// - Returns `Ok((`[`AnyOutput`](./struct.AnyOutput.html)`, `[`Next::Renderer`](./enum.Next.html)`))` to render this type next and output to the terminal
+/// - Returns `Ok((`[`AnyOutput`](./struct.AnyOutput.html)`, `[`NextProcess::Chain`](./enum.NextProcess.html)`))` to continue execution with this type next
+/// - Returns `Ok((`[`AnyOutput`](./struct.AnyOutput.html)`, `[`NextProcess::Renderer`](./enum.NextProcess.html)`))` to render this type next and output to the terminal
 /// - Returns `Err(`[`ChainProcessError`](./error/enum.ChainProcessError.html)`]` to terminate the program directly
 pub enum ChainProcess<G> {
-    Ok((AnyOutput<G>, Next)),
+    Ok((AnyOutput<G>, NextProcess)),
     Err(ChainProcessError),
 }
 
@@ -118,22 +118,22 @@ pub enum ChainProcess<G> {
 /// - `Chain`: Continue execution to the next chain
 /// - `Renderer`: Send output to renderer and end execution
 #[derive(Debug, PartialEq, Eq)]
-pub enum Next {
+pub enum NextProcess {
     Chain,
     Renderer,
 }
 
-impl std::fmt::Display for Next {
+impl std::fmt::Display for NextProcess {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Next::Chain => write!(f, "Chain"),
-            Next::Renderer => write!(f, "Renderer"),
+            NextProcess::Chain => write!(f, "Chain"),
+            NextProcess::Renderer => write!(f, "Renderer"),
         }
     }
 }
 
 impl<G> From<AnyOutput<G>> for ChainProcess<G> {
     fn from(value: AnyOutput<G>) -> Self {
-        ChainProcess::Ok((value, Next::Chain))
+        ChainProcess::Ok((value, NextProcess::Chain))
     }
 }

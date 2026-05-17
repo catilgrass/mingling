@@ -32,7 +32,7 @@ pub(crate) enum StateListInstalledOptions {
 pack!(MutexErrorListInstalled = ());
 
 #[chain]
-pub(crate) fn handle_list_installed_entry(prev: ListInstalledEntry) -> NextProcess {
+pub(crate) fn handle_list_installed_entry(prev: ListInstalledEntry) -> Next {
     let picker = Picker::new(prev.inner);
     let r = picker
         .pick::<bool>("--trusted")
@@ -64,7 +64,7 @@ pub(crate) struct ResultInstalledNamespaces {
 }
 
 #[chain]
-pub(crate) fn handle_state_list_installed_option(prev: StateListInstalledOptions) -> NextProcess {
+pub(crate) fn handle_state_list_installed_option(prev: StateListInstalledOptions) -> Next {
     ResultInstalledNamespaces {
         trusted: list_namespaces(true, false, false),
         untrusted: list_namespaces(false, true, false),

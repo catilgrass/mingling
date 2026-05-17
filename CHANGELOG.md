@@ -21,7 +21,7 @@ None
 
 ```rust
 #[chain]
-fn process(prev: HelloEntry, age: &Age, name: &Name) -> NextProcess {
+fn process(prev: HelloEntry, age: &Age, name: &Name) -> Next {
     // age and name are automatically injected from global resources
 }
 ```
@@ -44,7 +44,7 @@ fn proc(prev: HelloEntry) -> ChainProcess<ThisProgram> {
 
 ```rust
 #[chain]
-pub fn handle_some_entry(_prev: SomeEntry, exit: &mut ExitCode) -> NextProcess {
+pub fn handle_some_entry(_prev: SomeEntry, exit: &mut ExitCode) -> Next {
     exit.exit_code = 2;
     Empty::default()
 }
@@ -82,7 +82,7 @@ if mingling::feature::MINGLING_ASYNC {
 
 ```rust
 #[chain]
-fn your_chain(_prev: Prev) -> NextProcess {
+fn your_chain(_prev: Prev) -> Next {
     // Use `modify_res` to modify the value of `ExitCode`
     this::<ThisProgram>().modify_res(|r: &mut ExitCode| r.exit_code = 1);
 
@@ -122,6 +122,23 @@ this::<ThisProgram>().modify_res::<ExitCode>(|code| {
 
 ```rust
 use crate::ThisProgram; // Can be removed if not used directly
+```
+
+3. **\[core\]** **\[macros\]** Replace `NextProcess` placeholder with `Next`
+
+```rust
+// Before
+#[chain]
+fn your_chain(_prev: Prev) -> NextProcess {
+    // ...
+}
+
+// After
+#[chain]
+fn your_chain(_prev: Prev) -> Next {
+    // ...
+}
+
 ```
 
 --- 

@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use crate::{ChainProcess, Next, ProgramCollect};
+use crate::{ChainProcess, NextProcess, ProgramCollect};
 
 /// Asserts that the chain process result has the expected output type and next state.
 ///
@@ -26,7 +26,7 @@ use crate::{ChainProcess, Next, ProgramCollect};
 /// - The result is `ChainProcess::Err`, outputting the error message.
 /// - When `member_id` is not `None` and does not equal the actual output's `member_id`, displaying the expected and actual values.
 /// - When `next` is not `None` and does not equal the actual next state, displaying the expected and actual values.
-pub fn assert_next_eq<C>(result: &ChainProcess<C>, next: Option<Next>, member_id: Option<C>)
+pub fn assert_next_eq<C>(result: &ChainProcess<C>, next: Option<NextProcess>, member_id: Option<C>)
 where
     C: ProgramCollect + Display + PartialEq + 'static,
 {

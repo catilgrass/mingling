@@ -29,7 +29,7 @@ mingling = {
 
 ```rust
 #[chain]
-fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
+fn handle_greet_entry(prev: GreetEntry) -> Next {
     // Prev. approach:
     // let args = prev.inner;
     // let name = args.first().cloned().unwrap_or_else(|| "World".to_string());
@@ -118,7 +118,7 @@ pack!(ResultGreetSomeone = String);
 pack!(ErrorGreetNoNameProvided = ());
  
 #[chain]
-fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
+fn handle_greet_entry(prev: GreetEntry) -> Next {
     // Use `pick_or_route` to extract the `--name` arg
     // If missing or parse fails, route to ErrorGreetNoNameProvided
     let pick_result = prev
@@ -167,7 +167,7 @@ let name = match pick_result {
 
 ```rust
 #[chain]
-fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
+fn handle_greet_entry(prev: GreetEntry) -> Next {
     let name = prev
         .pick_or(["--name", "-n"], "World")
         // After extracting `--name`, format it immediately
@@ -192,7 +192,7 @@ pack!(ResultGreetSomeone = String);
 pack!(ErrorGreetNameTooLong = usize);
  
 #[chain]
-fn handle_greet_entry(prev: GreetEntry) -> NextProcess {
+fn handle_greet_entry(prev: GreetEntry) -> Next {
     let pick_result = prev
         .pick_or(["--name", "-n"], "World")
         // Unlike `after`, this borrows &String
@@ -244,7 +244,7 @@ fn render_greet_someone(prev: ResultGreetSomeone) {
 
 ```rust
 #[chain]
-fn handle_some_entry(prev: SomeEntry) -> NextProcess {
+fn handle_some_entry(prev: SomeEntry) -> Next {
     let confirmed: bool = prev.pick::<Yes>(()).unpack().is_yes();
     let confirm: bool = prev.pick::<bool>(["--confirm", "-C"]).unpack();
  
@@ -301,7 +301,7 @@ dispatcher!("connect", ConnectCommand => ConnectEntry);
 pack!(ResultConnected = Address);
  
 #[chain]
-fn handle_connect_entry(prev: ConnectEntry) -> NextProcess {
+fn handle_connect_entry(prev: ConnectEntry) -> Next {
     let address: Address = prev.pick("--addr").unpack();
     ResultConnected::new(address)
 }
@@ -346,7 +346,7 @@ impl PickableEnum for Fruits {}
 pack!(ResultFruit = Fruits);
  
 #[chain]
-fn handle_eat_fruit_entry(prev: EatFruitEntry) -> NextProcess {
+fn handle_eat_fruit_entry(prev: EatFruitEntry) -> Next {
     let fruit: Fruits = prev.pick("--fruit").unpack();
     ResultFruit::new(fruit)
 }

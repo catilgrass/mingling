@@ -35,8 +35,8 @@ pack!(Hello = String);
 // You can freely use async / non-async functions to declare your Chain
 
 #[chain]
-// fn parse_name(prev: HelloEntry) -> NextProcess {
-async fn parse_name(prev: HelloEntry) -> NextProcess {
+// fn parse_name(prev: HelloEntry) -> Next {
+async fn parse_name(prev: HelloEntry) -> Next {
     let name = prev.first().cloned().unwrap_or_else(|| "World".to_string());
     Hello::new(name).to_render()
 }
