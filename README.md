@@ -252,11 +252,11 @@ You can read the following docs to learn more about the `Mingling` framework:
 - [x] \[[0.1.7](https://docs.rs/mingling/0.1.7/mingling/)\] Clap Parser Support
 - [x] core: \[[0.1.7](https://docs.rs/mingling/0.1.7/mingling/)\] Help System
 - [x] mling: \[[0.1.7](https://docs.rs/mingling/0.1.7/mingling/)\] Mingling-CLI Tool ( `mling` )
-- [X] core: \[[0.1.8](https://docs.rs/mingling/0.1.8/mingling/)\] Compile-Time Dispatcher Tree
-- [ ] \[**0.1.9**\] Helpdoc Generation
+- [x] core: \[[0.1.8](https://docs.rs/mingling/0.1.8/mingling/)\] Compile-Time Dispatcher Tree
 - [ ] core: \[**0.1.9**\] Debug Toolkits ( `InvokeStackDisplay` )
-- [ ] core: \[**0.2.0**\] REPL Mode ( `program.exec_repl();` )
+- [ ] core: \[**0.1.9**\] REPL Mode ( `program.exec_repl();` )
 - [ ] ...
+- [ ] \[**0.2.0**\] Helpdoc Maker
 
 ## 🚫 Unplanned Features
 
