@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://github.com/CatilGrass/mingling">
-        <img alt="Mingling" src="docs/res/pixel_icon_o_1024.png" width="30%">
+        <img alt="Mingling" src="https://github.com/CatilGrass/mingling/raw/main/docs/res/pixel_icon_o_1024.png" width="30%">
     </a>
 </p>
 <h1 align="center">Mìng Lìng - 命令</h1>
@@ -230,18 +230,18 @@ The Mingling project consists of two main parts:
 
 ## 💡 Example Projects
 
-- **[`examples/example-basic/`](examples/example-basic/src/main.rs)** - A simple "Hello, World!" example demonstrating the most basic usage of a Dispatcher and Renderer.
-- **[`examples/example-async/`](examples/example-async/src/main.rs)** - Based on `example-basic`, demonstrates how to integrate an async runtime
-- **[`examples/example-picker/`](examples/example-picker/src/main.rs)** - Demonstrates how to use a Chain to process and transform command arguments.
-- **[`examples/example-general-renderer/`](examples/example-general-renderer/src/main.rs)** - Shows how to use a general renderer for different data types (e.g., JSON, YAML, TOML, RON).
-- **[`examples/example-completion/`](examples/example-completion/src/main.rs)** - An example implementing auto-completion for the shell.
+- **[`examples/example-basic/`](https://docs.rs/mingling/latest/mingling/_mingling_examples/example_basic/index.html)** - A simple "Hello, World!" example demonstrating the most basic usage of a Dispatcher and Renderer.
+- **[`examples/example-async/`](https://docs.rs/mingling/latest/mingling/_mingling_examples/example_async/index.html)** - Based on `example-basic`, demonstrates how to integrate an async runtime
+- **[`examples/example-picker/`](https://docs.rs/mingling/latest/mingling/_mingling_examples/example_picker/index.html)** - Demonstrates how to use a Chain to process and transform command arguments.
+- **[`examples/example-general-renderer/`](https://docs.rs/mingling/latest/mingling/_mingling_examples/example_general_renderer/index.html)** - Shows how to use a general renderer for different data types (e.g., JSON, YAML, TOML, RON).
+- **[`examples/example-completion/`](https://docs.rs/mingling/latest/mingling/_mingling_examples/example_completion/index.html)** - An example implementing auto-completion for the shell.
 
 ## 👣 Next Steps
 
 You can read the following docs to learn more about the `Mingling` framework:
 
 - Check out **[Mingling Helpdoc](https://catilgrass.github.io/mingling/)** to learn the basics.
-- Check out **[Mingling Examples](examples/)** to learn about the core library.
+- Check out **[Mingling Examples](https://docs.rs/mingling/latest/mingling/_mingling_examples/index.html)** to learn about the core library.
 - Check out **[Mingling Docs](https://docs.rs/mingling/latest/mingling/)** to learn how to use the macro system and explore the full API.
 
 ## 🗺️ Roadmap
