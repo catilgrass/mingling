@@ -1,8 +1,3 @@
-//! Renderer Attribute Macro Implementation
-//!
-//! This module provides the `#[renderer]` attribute macro for automatically
-//! generating structs that implement the `Renderer` trait from functions.
-
 use proc_macro::TokenStream;
 use quote::{ToTokens, quote};
 use syn::spanned::Spanned;

@@ -1,18 +1,3 @@
-//! Dispatch Tree Generation
-//!
-//! This module generates the dispatch tree code for the `dispatch_tree` feature.
-//! It builds a compact, hardcoded match tree at compile time to achieve O(len)
-//! command dispatch.
-//!
-//! # Algorithm
-//!
-//! For each depth, group nodes by the character at that depth.
-//! - If a group has only one node: emit `starts_with` check for the full name.
-//! - If a group has multiple nodes: emit a `match raw_chars.nth(depth)` arm and recurse.
-//! - At the leaf: call `Dispatcher::begin` on the matched dispatcher.
-//!
-//! Names are matched with a trailing space (e.g. "hello ") to ensure exact boundary.
-
 use proc_macro2::TokenStream;
 use quote::quote;
 use std::collections::BTreeMap;

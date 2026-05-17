@@ -1,8 +1,3 @@
-//! Dispatcher Chain and Dispatcher Render Macros
-//!
-//! This module provides macros for creating dispatcher chain and dispatcher render structs
-//! with automatic implementations of the `Dispatcher` trait.
-
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
