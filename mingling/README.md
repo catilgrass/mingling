@@ -216,7 +216,7 @@ Mingling abstracts command execution into the following parts:
   <summary>Architecture Diagram (click to expand)</summary>
 	<p align="center">
    		<a href="https://github.com/CatilGrass/mingling">
-        	<img alt="Mingling" src="docs/res/graph.png" width="75%">
+        	<img alt="Mingling" src="docs/res/graph.png" width="100%">
     	</a>
 	</p>
 </details>
