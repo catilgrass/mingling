@@ -246,17 +246,20 @@ You can read the following docs to learn more about the `Mingling` framework:
 
 ## 🗺️ Roadmap
 
-- [x] core: \[[0.1.4](https://docs.rs/mingling/0.1.4/mingling/)\] General Renderers *( Json, Yaml, Toml, Ron )* 
-- [x] core: \[[0.1.5](https://docs.rs/mingling/0.1.5/mingling/)\] Completion *( Bash Zsh Fish Pwsh )*
-- [x] core: \[[0.1.6](https://docs.rs/mingling/0.1.6/mingling/)\] Smarter Completion Suggest Generation
-- [x] \[[0.1.7](https://docs.rs/mingling/0.1.7/mingling/)\] Clap Parser Support
-- [x] core: \[[0.1.7](https://docs.rs/mingling/0.1.7/mingling/)\] Help System
-- [x] mling: \[[0.1.7](https://docs.rs/mingling/0.1.7/mingling/)\] Mingling-CLI Tool ( `mling` )
-- [ ] core: \[**0.1.8**\] Compile-Time Dispatcher Tree
-- [ ] \[**0.1.9**\] Helpdoc Generation
-- [ ] core: \[**0.1.9**\] Debug Toolkits ( `InvokeStackDisplay` )
-- [ ] core: \[**0.2.0**\] REPL Mode ( `program.exec_repl();` )
-- [ ] ...
+- [ ] Milestone.1 
+  - [x] \[[0.1.4](https://docs.rs/mingling/0.1.4/mingling/)\] \[`core`\] \[`general_renderer`\] **Mingling** can render data into serializable formats via `--json` and `--yaml` flags
+  - [x] \[[0.1.5](https://docs.rs/mingling/0.1.5/mingling/)\] \[`core`\] \[`comp`\] **Mingling** can dynamically invoke itself to provide completions for shells like `bash`, `zsh`, `fish`, and `pwsh`
+  - [x] \[[0.1.6](https://docs.rs/mingling/0.1.6/mingling/)\] \[`core`\] \[`comp`\] **Mingling** can gather more context for smarter completions
+  - [x] \[[0.1.7](https://docs.rs/mingling/0.1.7/mingling/)\] \[`clap`\] Provides a **Clap** compatibility layer, allowing **Mingling** to reuse its powerful parsing capabilities
+  - [x] \[[0.1.7](https://docs.rs/mingling/0.1.7/mingling/)\] \[`core`\] **Mingling** can intercept `-h` or `--help` flags to display custom help text for each subcommand
+  - [x] \[[0.1.7](https://docs.rs/mingling/0.1.7/mingling/)\] \[`mling`\] Provides a basic scaffolding tool (`mling`) for rapid development and debugging
+  - [x] \[[0.1.8](https://docs.rs/mingling/0.1.8/mingling/)\] \[`core`\] \[`dispatch_tree`\] Converts the subcommand list into a prefix tree to improve command matching speed
+  - [ ] \[**0.1.9**\] \[`core`\] \[`dev_toolkits`\] Provides debugging interfaces for developers to capture invocation information when issues arise (`InvokeStackDisplay`)
+  - [ ] \[**0.1.9**\] \[`core`\] \[`repl`\] Provides REPL capability (`program.exec_repl();`)
+
+- [ ] Milestone.2
+  - [ ] ...
+  - [ ] \[**0.2.5**\] \[`mling`\] Helpdoc Maker
 
 ## 🚫 Unplanned Features
 
