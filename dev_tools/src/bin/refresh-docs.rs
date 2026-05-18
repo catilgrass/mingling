@@ -10,7 +10,18 @@ const OUTPUT_PATH: &str = "./mingling/src/example_docs.rs";
 const TEMPLATE_CONTENT: &str = include_str!("../../../mingling/src/example_docs.rs.tmpl");
 
 fn main() {
+    copy_readme();
     gen_example_doc_module();
+}
+
+fn copy_readme() {
+    let repo_root = find_git_repo().unwrap();
+    let src = repo_root.join("README.md");
+    let dst = repo_root.join("./mingling/README.md");
+    if src.exists() {
+        std::fs::copy(&src, &dst).unwrap();
+        println_cargo_style!("Copied: copied README.md to mingling/README.md");
+    }
 }
 
 fn gen_example_doc_module() {
