@@ -5,5 +5,5 @@
     │   > cargo add mingling             │
     │                                    │
     │  Or add this to your Cargo.toml    │
-    │   > mingling = "0.1.8"             │
+    │   > mingling = "0.1.9"             │
     └────────────────────────────────────┘

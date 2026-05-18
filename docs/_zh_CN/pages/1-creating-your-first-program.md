@@ -25,7 +25,7 @@
 
 ```toml
 [dependencies]
-mingling = "0.1.8"
+mingling = "0.1.9"
  
 # 如果您要尝鲜，可以试试 Github 上托管的版本
 mingling = { git = "https://github.com/catilgrass/mingling", branch = "main" }

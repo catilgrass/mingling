@@ -62,7 +62,7 @@ Otherwise, add `Mingling` to your `Cargo.toml`:
 
 ```toml
 # From crates.io
-mingling = "0.1.8"
+mingling = "0.1.9"
 
 # From GitHub
 mingling = { git = "https://github.com/catilgrass/mingling", branch = "main" }

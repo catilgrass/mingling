@@ -25,7 +25,7 @@
 
 ```toml
 [dependencies]
-mingling = "0.1.8"
+mingling = "0.1.9"
  
 # If you want the latest, try the version hosted on Github
 mingling = { git = "https://github.com/catilgrass/mingling", branch = "main" }
