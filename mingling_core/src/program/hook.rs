@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use std::any::Any;
 
 use crate::{AnyOutput, Program, ProgramCollect, RenderResult, error::ProgramPanic};
@@ -37,6 +39,14 @@ where
     /// Executes when the REPL starts (only available with `repl` feature)
     #[cfg(feature = "repl")]
     pub repl_on_begin: Option<fn()>,
+
+    /// Executes before reading the next REPL line (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub repl_pre_readline: Option<fn()>,
+
+    /// Executes after reading a REPL line (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub repl_post_readline: Option<fn(line: &str)>,
 
     /// Executes when the REPL receives a render result (only available with `repl` feature)
     #[cfg(feature = "repl")]
@@ -185,6 +195,34 @@ where
         }
     }
 
+    /// Runs the REPL pre-readline hooks (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub(crate) fn run_hook_repl_pre_readline(&self) {
+        if !self.user_context.run_hook {
+            return;
+        }
+
+        for hook in &self.hooks {
+            if let Some(repl_pre_readline) = hook.repl_pre_readline {
+                repl_pre_readline()
+            }
+        }
+    }
+
+    /// Runs the REPL post-readline hooks (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub(crate) fn run_hook_repl_post_readline(&self, line: &str) {
+        if !self.user_context.run_hook {
+            return;
+        }
+
+        for hook in &self.hooks {
+            if let Some(repl_post_readline) = hook.repl_post_readline {
+                repl_post_readline(line)
+            }
+        }
+    }
+
     /// Runs the REPL receive result hooks (only available with `repl` feature)
     #[cfg(feature = "repl")]
     pub(crate) fn run_hook_repl_on_receive_result(&self, result: &RenderResult) {
@@ -232,6 +270,10 @@ where
             exec_panic: None,
             #[cfg(feature = "repl")]
             repl_on_begin: None,
+            #[cfg(feature = "repl")]
+            repl_pre_readline: None,
+            #[cfg(feature = "repl")]
+            repl_post_readline: None,
             #[cfg(feature = "repl")]
             repl_on_receive_result: None,
             #[cfg(feature = "repl")]
@@ -297,6 +339,22 @@ where
     #[cfg(feature = "repl")]
     pub fn on_repl_begin(mut self, handler: fn()) -> Self {
         let _ = self.repl_on_begin.insert(handler);
+        self
+    }
+
+    /// Sets the handler for the REPL pre-readline event (only available with `repl` feature).
+    /// This hook runs after `on_repl_begin` but before reading the next input line.
+    #[cfg(feature = "repl")]
+    pub fn on_repl_pre_readline(mut self, handler: fn()) -> Self {
+        let _ = self.repl_pre_readline.insert(handler);
+        self
+    }
+
+    /// Sets the handler for the REPL post-readline event (only available with `repl` feature).
+    /// This hook runs after reading a line of input and receives the line as a `&str`.
+    #[cfg(feature = "repl")]
+    pub fn on_repl_post_readline(mut self, handler: fn(line: &str)) -> Self {
+        let _ = self.repl_post_readline.insert(handler);
         self
     }
 
