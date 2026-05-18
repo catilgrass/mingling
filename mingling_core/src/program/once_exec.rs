@@ -10,7 +10,7 @@ impl<C> Program<C>
 where
     C: ProgramCollect<Enum = C>,
 {
-    async fn exec_wrapper<F, Fut>(self, f: F) -> Result<Fut::Output, ProgramPanic>
+    pub(crate) async fn exec_wrapper<F, Fut>(self, f: F) -> Fut::Output
     where
         C: 'static + Send + Sync,
         F: FnOnce(&'static Program<C>) -> Fut + Send + Sync,
@@ -30,20 +30,7 @@ where
             std::panic::set_hook(Box::new(|_| {}));
         }
 
-        #[cfg(panic = "abort")]
-        return Ok(f(program));
-
-        #[cfg(not(panic = "abort"))]
-        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(program))) {
-            Ok(fut) => Ok(fut.await),
-            Err(panic_info) => {
-                let panic_payload = ProgramPanic {
-                    payload: panic_info,
-                };
-                program.run_hook_exec_panic(&panic_payload);
-                Err(panic_payload)
-            }
-        }
+        f(program).await
     }
 
     /// Run the command line program
@@ -55,12 +42,33 @@ where
         self.run_hook_on_begin();
 
         self.args = self.args.iter().skip(1).cloned().collect();
-        match self
+
+        #[cfg(panic = "abort")]
+        return self
             .exec_wrapper(|p| async { crate::exec::exec(p).await.map_err(|e| e.into()) })
-            .await
-        {
-            Ok(r) => r,
-            Err(e) => Err(ProgramExecuteError::Panic(e)),
+            .await;
+
+        #[cfg(not(panic = "abort"))]
+        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            self.exec_wrapper(|p| async { crate::exec::exec(p).await.map_err(|e| e.into()) })
+        })) {
+            Ok(fut) => fut.await,
+            Err(panic_info) => {
+                let panic_payload = ProgramPanic {
+                    payload: panic_info,
+                };
+
+                let program = THIS_PROGRAM
+                    .get()
+                    .unwrap()
+                    .as_ref()
+                    .unwrap()
+                    .downcast_ref::<Program<C>>()
+                    .unwrap();
+
+                program.run_hook_exec_panic(&panic_payload);
+                Err(ProgramExecuteError::Panic(panic_payload))
+            }
         }
     }
 
@@ -125,7 +133,7 @@ impl<C> Program<C>
 where
     C: ProgramCollect<Enum = C>,
 {
-    fn exec_wrapper<F, R>(self, f: F) -> Result<R, ProgramPanic>
+    pub(crate) fn exec_wrapper<F, R>(self, f: F) -> R
     where
         C: 'static + Send + Sync,
         F: FnOnce(&'static Program<C>) -> R + Send + Sync,
@@ -144,22 +152,7 @@ where
             std::panic::set_hook(Box::new(|_| {}));
         }
 
-        #[cfg(panic = "abort")]
-        return Ok(f(program));
-
-        #[cfg(not(panic = "abort"))]
-        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(program))) {
-            Ok(result) => Ok(result),
-            Err(panic_info) => {
-                use crate::error::ProgramPanic;
-
-                let panic_payload = ProgramPanic {
-                    payload: panic_info,
-                };
-                program.run_hook_exec_panic(&panic_payload);
-                Err(panic_payload)
-            }
-        }
+        f(program)
     }
 
     /// Run the command line program
@@ -171,9 +164,31 @@ where
         self.run_hook_on_begin();
 
         self.args = self.args.iter().skip(1).cloned().collect();
-        match self.exec_wrapper(|p| crate::exec::exec(p).map_err(|e| e.into())) {
-            Ok(r) => r,
-            Err(e) => Err(ProgramExecuteError::Panic(e)),
+
+        #[cfg(panic = "abort")]
+        return self.exec_wrapper(|p| crate::exec::exec(p).map_err(|e| e.into()));
+
+        #[cfg(not(panic = "abort"))]
+        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            self.exec_wrapper(|p| crate::exec::exec(p).map_err(|e| e.into()))
+        })) {
+            Ok(result) => result,
+            Err(panic_info) => {
+                let panic_payload = ProgramPanic {
+                    payload: panic_info,
+                };
+
+                let program = THIS_PROGRAM
+                    .get()
+                    .unwrap()
+                    .as_ref()
+                    .unwrap()
+                    .downcast_ref::<Program<C>>()
+                    .unwrap();
+
+                program.run_hook_exec_panic(&panic_payload);
+                Err(ProgramExecuteError::Panic(panic_payload))
+            }
         }
     }
 

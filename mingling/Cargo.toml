@@ -13,7 +13,12 @@ repository.workspace = true
 [dev-dependencies]
 serde.workspace = true
 tokio.workspace = true
-mingling = { path = ".", features = ["comp", "general_renderer", "parser"] }
+mingling = { path = ".", features = [
+    "comp",
+    "general_renderer",
+    "parser",
+    "repl",
+] }
 
 [package.metadata.docs.rs]
 features = ["builds", "general_renderer", "repl", "comp", "parser"]

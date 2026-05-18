@@ -60,6 +60,9 @@ pub enum ProgramInternalExecuteError {
     /// An other internal error occurred.
     Other(String),
 
+    /// A single REPL execution failed
+    REPLPanic(ProgramPanic),
+
     /// An I/O error occurred during execution.
     IO(std::io::Error),
 }
@@ -75,6 +78,9 @@ impl fmt::Display for ProgramInternalExecuteError {
             }
             ProgramInternalExecuteError::Other(s) => write!(f, "Other error: {}", s),
             ProgramInternalExecuteError::IO(e) => write!(f, "IO error: {}", e),
+            ProgramInternalExecuteError::REPLPanic(panic) => {
+                write!(f, "A single REPL execution failed: {}", panic)
+            }
         }
     }
 }
@@ -105,6 +111,10 @@ impl From<ProgramInternalExecuteError> for ProgramExecuteError {
             }
             ProgramInternalExecuteError::Other(s) => ProgramExecuteError::Other(s),
             ProgramInternalExecuteError::IO(e) => ProgramExecuteError::Other(format!("{}", e)),
+            ProgramInternalExecuteError::REPLPanic(p) => ProgramExecuteError::Other(format!(
+                "A single REPL execution failed: {}",
+                p
+            )),
         }
     }
 }

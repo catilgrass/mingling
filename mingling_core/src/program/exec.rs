@@ -15,14 +15,35 @@ pub async fn exec<C>(
 where
     C: ProgramCollect<Enum = C>,
 {
+    let args = program.args.clone();
+    exec_with_args(program, args).await
+}
+
+#[cfg(not(feature = "async"))]
+pub fn exec<C>(program: &'static Program<C>) -> Result<RenderResult, ProgramInternalExecuteError>
+where
+    C: ProgramCollect<Enum = C>,
+{
+    let args = program.args.clone();
+    exec_with_args(program, args)
+}
+
+#[cfg(feature = "async")]
+pub async fn exec_with_args<C>(
+    program: &'static Program<C>,
+    args: Vec<String>,
+) -> Result<RenderResult, ProgramInternalExecuteError>
+where
+    C: ProgramCollect<Enum = C>,
+{
     // Run hooks
-    program.run_hook_pre_dispatch(&program.args);
+    program.run_hook_pre_dispatch(&args);
 
     #[cfg(not(feature = "dispatch_tree"))]
-    let mut current = dispatch_args_dynamic(program, &program.args)?;
+    let mut current = dispatch_args_dynamic(program, &args)?;
 
     #[cfg(feature = "dispatch_tree")]
-    let mut current = C::dispatch_args_trie(&program.args)?;
+    let mut current = C::dispatch_args_trie(&args)?;
 
     // Run hook
     program.run_hook_post_dispatch(&current.member_id);
@@ -102,18 +123,21 @@ where
 }
 
 #[cfg(not(feature = "async"))]
-pub fn exec<C>(program: &'static Program<C>) -> Result<RenderResult, ProgramInternalExecuteError>
+pub fn exec_with_args<C>(
+    program: &'static Program<C>,
+    args: Vec<String>,
+) -> Result<RenderResult, ProgramInternalExecuteError>
 where
     C: ProgramCollect<Enum = C>,
 {
     // Run hooks
-    program.run_hook_pre_dispatch(&program.args);
+    program.run_hook_pre_dispatch(&args);
 
     #[cfg(not(feature = "dispatch_tree"))]
-    let mut current = dispatch_args_dynamic(program, &program.args)?;
+    let mut current = dispatch_args_dynamic(program, &args)?;
 
     #[cfg(feature = "dispatch_tree")]
-    let mut current = C::dispatch_args_trie(&program.args)?;
+    let mut current = C::dispatch_args_trie(&args)?;
 
     // Run hook
     program.run_hook_post_dispatch(&current.member_id);
@@ -212,7 +236,7 @@ where
         }
         Err(ProgramInternalExecuteError::DispatcherNotFound) => {
             // No matching Dispatcher is found
-            C::build_dispatcher_not_found(program.args.clone())
+            C::build_dispatcher_not_found(args.clone())
         }
         Err(e) => return Err(e),
     };

@@ -47,6 +47,9 @@ impl From<ProgramInternalExecuteError> for ChainProcessError {
             ProgramInternalExecuteError::IO(e) => {
                 ChainProcessError::Other(format!("IOError: {:?}", e))
             }
+            ProgramInternalExecuteError::REPLPanic(program_panic) => {
+                ChainProcessError::Other(format!("REPLPanic: {}", program_panic))
+            }
         }
     }
 }

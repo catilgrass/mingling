@@ -33,6 +33,18 @@ where
 
     /// Executes when the program panics
     pub exec_panic: Option<fn(&ProgramPanic)>,
+
+    /// Executes when the REPL starts (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub repl_on_begin: Option<fn()>,
+
+    /// Executes when the REPL receives a render result (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub repl_on_receive_result: Option<fn(&RenderResult)>,
+
+    /// Executes when the REPL panics (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub repl_on_panic: Option<fn(&ProgramPanic)>,
 }
 
 impl<C> Program<C>
@@ -158,6 +170,48 @@ where
         }
         exit_code
     }
+
+    /// Runs the REPL begin hooks (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub(crate) fn run_hook_repl_on_begin(&self) {
+        if !self.user_context.run_hook {
+            return;
+        }
+
+        for hook in &self.hooks {
+            if let Some(repl_on_begin) = hook.repl_on_begin {
+                repl_on_begin()
+            }
+        }
+    }
+
+    /// Runs the REPL receive result hooks (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub(crate) fn run_hook_repl_on_receive_result(&self, result: &RenderResult) {
+        if !self.user_context.run_hook {
+            return;
+        }
+
+        for hook in &self.hooks {
+            if let Some(repl_on_receive_result) = hook.repl_on_receive_result {
+                repl_on_receive_result(result)
+            }
+        }
+    }
+
+    /// Runs the REPL panic hooks (only available with `repl` feature)
+    #[cfg(feature = "repl")]
+    pub(crate) fn run_hook_repl_on_panic(&self, panic_info: &ProgramPanic) {
+        if !self.user_context.run_hook {
+            return;
+        }
+
+        for hook in &self.hooks {
+            if let Some(repl_on_panic) = hook.repl_on_panic {
+                repl_on_panic(panic_info)
+            }
+        }
+    }
 }
 
 impl<C> ProgramHook<C>
@@ -176,6 +230,12 @@ where
             post_render: None,
             finish: None,
             exec_panic: None,
+            #[cfg(feature = "repl")]
+            repl_on_begin: None,
+            #[cfg(feature = "repl")]
+            repl_on_receive_result: None,
+            #[cfg(feature = "repl")]
+            repl_on_panic: None,
         }
     }
 
@@ -230,6 +290,27 @@ where
     /// Sets the handler for the `exec_panic` event.
     pub fn on_exec_panic(mut self, handler: fn(&ProgramPanic)) -> Self {
         let _ = self.exec_panic.insert(handler);
+        self
+    }
+
+    /// Sets the handler for the REPL begin event (only available with `repl` feature).
+    #[cfg(feature = "repl")]
+    pub fn on_repl_begin(mut self, handler: fn()) -> Self {
+        let _ = self.repl_on_begin.insert(handler);
+        self
+    }
+
+    /// Sets the handler for the REPL receive result event (only available with `repl` feature).
+    #[cfg(feature = "repl")]
+    pub fn on_repl_receive_result(mut self, handler: fn(result: &RenderResult)) -> Self {
+        let _ = self.repl_on_receive_result.insert(handler);
+        self
+    }
+
+    /// Sets the handler for the REPL panic event (only available with `repl` feature).
+    #[cfg(feature = "repl")]
+    pub fn on_repl_panic(mut self, handler: fn(panic: &ProgramPanic)) -> Self {
+        let _ = self.repl_on_panic.insert(handler);
         self
     }
 }

@@ -56,7 +56,7 @@ fn build_all() -> Result<(), i32> {
     for cargo_toml in cargo_tomls {
         println_cargo_style!("Build: {}", cargo_toml.to_string_lossy());
         run_cmd!(
-            "cargo check --manifest-path {}",
+            "cargo build --manifest-path {}",
             cargo_toml.to_string_lossy()
         )?;
     }
