@@ -220,6 +220,9 @@ where
     where
         C: 'static + Send + Sync,
     {
+        // Run hooks
+        self.run_hook_on_begin();
+
         self.args = self.args.iter().skip(1).cloned().collect();
         match self
             .exec_wrapper(|p| async { crate::exec::exec(p).await.map_err(|e| e.into()) })
@@ -331,6 +334,9 @@ where
     where
         C: 'static + Send + Sync,
     {
+        // Run hooks
+        self.run_hook_on_begin();
+
         self.args = self.args.iter().skip(1).cloned().collect();
         match self.exec_wrapper(|p| crate::exec::exec(p).map_err(|e| e.into())) {
             Ok(r) => r,

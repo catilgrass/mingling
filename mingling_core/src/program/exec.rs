@@ -16,7 +16,6 @@ where
     C: ProgramCollect<Enum = C>,
 {
     // Run hooks
-    program.run_hook_on_begin();
     program.run_hook_pre_dispatch(&program.args);
 
     #[cfg(not(feature = "dispatch_tree"))]
@@ -108,7 +107,6 @@ where
     C: ProgramCollect<Enum = C>,
 {
     // Run hooks
-    program.run_hook_on_begin();
     program.run_hook_pre_dispatch(&program.args);
 
     #[cfg(not(feature = "dispatch_tree"))]
