@@ -126,7 +126,7 @@ fn handle_greet_entry(prev: GreetEntry) -> Next {
             ["--name", "-n"],
             ErrorGreetNoNameProvided::default().to_render(),
         )
-        // 在使用了任何可路由到方法后，`unpack` 将会返回 `Result<Value, Route>`
+        // 在使用了任何可路由的函数后，`unpack` 将会返回 `Result<Value, Route>`
         .unpack();
  
     // 使用 route! 宏展开 `pick_result`，

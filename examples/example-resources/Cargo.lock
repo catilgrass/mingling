@@ -27,6 +27,8 @@ dependencies = [
 [[package]]
 name = "mingling_core"
 version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0df6a42e46dade5788072687c887e15a980d1d16ab5dc2a98c65d47cf6a82993"
 dependencies = [
  "just_fmt",
  "once_cell",
@@ -35,6 +37,8 @@ dependencies = [
 [[package]]
 name = "mingling_macros"
 version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae2140e7f48e6e73ebaa3bea51eeb89e6caf52d6d48c47b1337a00fa1912ea07"
 dependencies = [
  "just_fmt",
  "once_cell",

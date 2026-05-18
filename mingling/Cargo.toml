@@ -65,7 +65,7 @@ toml_serde_fmt = ["mingling_core/toml_serde_fmt"]
 ron_serde_fmt = ["mingling_core/ron_serde_fmt"]
 
 [dependencies]
-mingling_core = { path = "../mingling_core", default-features = false }
-mingling_macros = { path = "../mingling_macros", default-features = false }
+mingling_core = { version = "0.1.8", default-features = false }
+mingling_macros = { version = "0.1.8", default-features = false }
 serde = { workspace = true, optional = true }
 size = { version = "0.5", optional = true }
